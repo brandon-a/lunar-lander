@@ -21,3 +21,7 @@ bin/Octree-Template_debug.pdb
 bin/assimp64.dll
 bin/fmodex64.dll
 bin/fmodexL64.dll
+.DS_Store
+bin/.DS_Store
+bin/data/.DS_Store
+bin/data/geo/.DS_Store
