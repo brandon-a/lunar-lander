@@ -58,11 +58,12 @@ void ofApp::setup(){
 	//
 	initLightingAndMaterials();
 
-	mars.loadModel("geo/mars-low-v2.obj");
+	mars.loadModel("geo/models/terrain.obj");
 	mars.setScaleNormalization(false);
 	mars.setRotation(1, 180, 0, 0, 1);
+	cout << mars.getMeshNames()[0] << endl;
 
-	octree.create(mars.getMesh("mars_terrain"), (int) numLevels);
+	octree.create(mars.getMesh("pPlane1"), (int) numLevels);
 
 
 	//boundingBox = meshBounds(mars.getMesh(0));
@@ -295,7 +296,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 	uint64_t end;
 	uint64_t start = time->getAsMilliseconds();
 	if (octree.intersect(ray, octree.root, nodeRtn)) {
-		ofVec3f pos = mars.getMesh("mars_terrain").getVertex(nodeRtn.points.at(0));
+		ofVec3f pos = mars.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
 		sphere.setPosition(pos);
 		cout << "Intersects at: " << pos << endl;
 		end = time->getAsMilliseconds();
