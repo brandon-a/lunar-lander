@@ -58,12 +58,18 @@ void ofApp::setup(){
 	//
 	initLightingAndMaterials();
 
-	mars.loadModel("geo/models/terrain.obj");
-	mars.setScaleNormalization(false);
-	mars.setRotation(1, 180, 0, 0, 1);
-	cout << mars.getMeshNames()[0] << endl;
+	terrain.loadModel("geo/models/terrain.obj");
+	terrain.setScaleNormalization(false);
+	terrain.setRotation(1, 180, 0, 0, 1);
 
-	octree.create(mars.getMesh("pPlane1"), (int) numLevels);
+	if (rocket.loadModel("geo/models/rocket.obj"))
+		bRoverLoaded = true;
+	rocket.setScaleNormalization(false);
+	rocket.setRotation(1, 180, 0, 0, 1);
+
+	cout << terrain.getMeshNames()[0] << endl;
+
+	octree.create(terrain.getMesh("pPlane1"), (int) numLevels);
 
 
 	//boundingBox = meshBounds(mars.getMesh(0));
@@ -97,28 +103,28 @@ void ofApp::draw(){
 	if (bWireframe) {                    // wireframe mode  (include axis)
 		ofDisableLighting();
 		ofSetColor(ofColor::slateGray);
-		mars.drawWireframe();
+		terrain.drawWireframe();
 		ofSetColor(ofColor::white);
 		if(leaf)
 			octree.drawLeafNodes(octree.root);
 		else
 			octree.draw(currLevel, 0);
 		if (bRoverLoaded) {
-			rover.drawWireframe();
-			if (!bTerrainSelected) drawAxis(rover.getPosition());
+			rocket.drawWireframe();
+			if (!bTerrainSelected) drawAxis(rocket.getPosition());
 		}
 		if (bTerrainSelected) drawAxis(ofVec3f(0, 0, 0));
 	}
 	else {
 		ofEnableLighting();              // shaded mode
-		mars.drawFaces();
+		terrain.drawFaces();
 		if (leaf)
 			octree.drawLeafNodes(octree.root);
 		else
 			octree.draw(currLevel, 0);
 		if (bRoverLoaded) {
-			rover.drawFaces();
-			if (!bTerrainSelected) drawAxis(rover.getPosition());
+			rocket.drawFaces();
+			if (!bTerrainSelected) drawAxis(rocket.getPosition());
 		}
 		if (bTerrainSelected) drawAxis(ofVec3f(0, 0, 0));
 	}
@@ -127,7 +133,7 @@ void ofApp::draw(){
 	if (bDisplayPoints) {                // display points as an option    
 		glPointSize(3);
 		ofSetColor(ofColor::green);
-		mars.drawVertices();
+		terrain.drawVertices();
 	}
 
 	// highlight selected point (draw sphere around selected point)
@@ -296,7 +302,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 	uint64_t end;
 	uint64_t start = time->getAsMilliseconds();
 	if (octree.intersect(ray, octree.root, nodeRtn)) {
-		ofVec3f pos = mars.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
+		ofVec3f pos = terrain.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
 		sphere.setPosition(pos);
 		cout << "Intersects at: " << pos << endl;
 		end = time->getAsMilliseconds();
@@ -397,7 +403,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
 ////
 //bool ofApp::doPointSelection() {
 //
-//	ofMesh mesh = mars.getMesh(0);
+//	ofMesh mesh = terrain.getMesh(0);
 //	int n = mesh.getNumVertices();
 //	float nearestDistance = 0;
 //	int nearestIndex = 0;
