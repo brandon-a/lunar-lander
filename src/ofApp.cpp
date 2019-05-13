@@ -50,6 +50,7 @@ void ofApp::setup(){
 	ofEnableDepthTest();
 	sphere.setRadius(50);
 
+	pSys.add(ship);
 
 	gui.setup();
 	gui.add(numLevels.setup("levels", 10, 1, 30));
@@ -87,6 +88,7 @@ void ofApp::setup(){
 //
 void ofApp::update() {
 	currLevel = (int) numLevels;
+	rocket.setPosition(ship.position.x, ship.position.y, ship.position.z);
 }
 //--------------------------------------------------------------
 void ofApp::draw(){

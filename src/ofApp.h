@@ -8,6 +8,8 @@
 #include <iostream>
 #include <string>
 #include "ofxGui.h"
+#include "ParticleSystem.h"
+#include "Particle.h"
 
 class ofApp : public ofBaseApp{
 
@@ -50,6 +52,8 @@ class ofApp : public ofBaseApp{
 		ofxIntSlider numLevels;
 		ofxPanel gui;
 		ofSpherePrimitive sphere;
+		ParticleSystem pSys;
+		Particle ship;
 
 		bool bAltKeyDown;
 		bool bCtrlKeyDown;
