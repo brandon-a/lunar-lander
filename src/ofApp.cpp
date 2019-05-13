@@ -50,7 +50,16 @@ void ofApp::setup(){
 	ofEnableDepthTest();
 	sphere.setRadius(50);
 
-	pSys.add(ship);
+	ship.lifespan = -1;
+	ship.mass = 100;
+
+	//turbForce.set(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
+	//gravityForce.setGravity(ofVec3f(0, 100, 0));
+
+	//pSys.add(ship);
+
+	//pSys.addForce(&turbForce);
+	//pSys.addForce(&gravityForce);
 
 	gui.setup();
 	gui.add(numLevels.setup("levels", 10, 1, 30));
@@ -88,7 +97,9 @@ void ofApp::setup(){
 //
 void ofApp::update() {
 	currLevel = (int) numLevels;
+	pSys.update();
 	rocket.setPosition(ship.position.x, ship.position.y, ship.position.z);
+	cout << ship.position << endl;
 }
 //--------------------------------------------------------------
 void ofApp::draw(){

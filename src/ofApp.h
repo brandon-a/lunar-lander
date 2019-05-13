@@ -55,6 +55,9 @@ class ofApp : public ofBaseApp{
 		ParticleSystem pSys;
 		Particle ship;
 
+		TurbulenceForce turbForce;
+		GravityForce gravityForce;
+
 		bool bAltKeyDown;
 		bool bCtrlKeyDown;
 		bool bWireframe;
