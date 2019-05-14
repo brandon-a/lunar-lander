@@ -113,6 +113,20 @@ void TurbulenceForce::updateForce(Particle * particle) {
 	particle->forces.z += ofRandom(tmin.z, tmax.z);
 }
 
+ThrustForce::ThrustForce(ofVec3f& dir, float mag){
+	direction = dir;
+	magnitude = mag;
+}
+
+void ThrustForce::updateForce(Particle* particle){
+	if (direction.x != 0)
+		particle->forces.x += magnitude * particle->mass;
+	if (direction.y != 0)
+		particle->forces.y += magnitude * particle->mass;
+	if (direction.z != 0)
+		particle->forces.z += magnitude * particle->mass;
+}
+
 // Impulse Radial Force - this is a "one shot" force that
 // eminates radially outward in random directions.
 //

@@ -27,10 +27,11 @@ void Particle::draw() {
 //
 void Particle::integrate() {
 
-	
+	float framerate = ofGetFrameRate();
+	if (framerate < 1.0) return;
 	// interval for this step
 	//
-	float dt = 1.0 / ofGetFrameRate();
+	float dt = 1.0 / framerate;
 
 	// update position based on velocity
 	//

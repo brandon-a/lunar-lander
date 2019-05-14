@@ -50,7 +50,21 @@ void ofApp::setup(){
 	ofEnableDepthTest();
 	sphere.setRadius(50);
 
-	pSys.add(ship);
+	ship = new Particle();
+
+	pSys.add(*ship);
+	pSys.particles[0].position = ofVec3f(0, 1000, 0);
+	pSys.particles[0].velocity = ofVec3f(0, 0, 0);
+	pSys.particles[0].lifespan = -1;
+	pSys.particles[0].mass = 10;
+
+	turbForce = new TurbulenceForce(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
+	gravityForce = new GravityForce(ofVec3f(0, -10, 0));
+	thrustForce = new ThrustForce(ofVec3f(0, 0, 0), 20.0);
+
+	pSys.addForce(turbForce);
+	pSys.addForce(gravityForce);
+	pSys.addForce(thrustForce);
 
 	gui.setup();
 	gui.add(numLevels.setup("levels", 10, 1, 30));
@@ -88,7 +102,9 @@ void ofApp::setup(){
 //
 void ofApp::update() {
 	currLevel = (int) numLevels;
-	rocket.setPosition(ship.position.x, ship.position.y, ship.position.z);
+	pSys.update();
+	rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
+	cout << pSys.particles[0].position.x << " " << pSys.particles[0].position.y << " " << pSys.particles[0].position.z << endl;
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -245,9 +261,19 @@ void ofApp::keyPressed(int key) {
 	case OF_KEY_CONTROL:
 		bCtrlKeyDown = true;
 		break;
-	case OF_KEY_SHIFT:
+	case OF_KEY_SHIFT: thrustForce->setDirection(ofVec3f(0, -1, 0));
 		break;
-	case OF_KEY_DEL:
+	case ' ': thrustForce->setDirection(ofVec3f(0, 1, 0));
+		break;
+	case OF_KEY_DEL: 
+		break;
+	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(0, 0, 1));
+		break;
+	case OF_KEY_DOWN: thrustForce->setDirection(ofVec3f(0, 0, -1));
+		break;
+	case OF_KEY_LEFT: thrustForce->setDirection(ofVec3f(1, 0, 0));
+		break;
+	case OF_KEY_RIGHT: thrustForce->setDirection(ofVec3f(-1, 0, 0));
 		break;
 	default:
 		break;

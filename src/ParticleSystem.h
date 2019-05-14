@@ -57,3 +57,13 @@ public:
 	void updateForce(Particle *);
 	void setHeight(float height);
 };
+
+class ThrustForce : public ParticleForce {
+	float magnitude;
+	ofVec3f direction;
+public:
+	ThrustForce(ofVec3f &dir, float mag);
+	void updateForce(Particle *);
+	void setMagnitude(float mag) { magnitude = mag; }
+	void setDirection(ofVec3f dir) { direction = dir; }
+};
