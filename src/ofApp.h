@@ -68,6 +68,7 @@ class ofApp : public ofBaseApp{
 		bool bPointSelected;
 		bool leaf;
 		int	currLevel;
+		bool isPaused;
 
 		bool bRoverLoaded;
 		bool bTerrainSelected;

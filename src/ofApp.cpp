@@ -40,6 +40,7 @@ void ofApp::setup(){
 	bRoverLoaded = false;
 	bTerrainSelected = true;
 	leaf = true;
+	isPaused = false;
 //	ofSetWindowShape(1024, 768);
 	cam.setDistance(10);
 	cam.setNearClip(.1);
@@ -109,10 +110,12 @@ void ofApp::setup(){
 // incrementally update scene (animation)
 //
 void ofApp::update() {
-	shipCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
-	currLevel = (int) numLevels;
-	pSys.update();
-	rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
+	if (!isPaused) {
+		shipCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
+		currLevel = (int)numLevels;
+		pSys.update();
+		rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
+	}
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -258,7 +261,7 @@ void ofApp::keyPressed(int key) {
 	case 'v':
 		togglePointsDisplay();
 		break;
-	case 'V':
+	case 'p': isPaused = !isPaused;
 		break;
 	case 'w':
 		toggleWireframeMode();
@@ -270,19 +273,17 @@ void ofApp::keyPressed(int key) {
 	case OF_KEY_CONTROL:
 		bCtrlKeyDown = true;
 		break;
-	case OF_KEY_SHIFT: thrustForce->setDirection(ofVec3f(0, -1, 0));
+	case OF_KEY_SHIFT: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, -1, thrustForce->getDirection().z));
 		break;
-	case ' ': thrustForce->setDirection(ofVec3f(0, 1, 0));
+	case ' ': thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 1, thrustForce->getDirection().z));
 		break;
-	case OF_KEY_DEL: 
+	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, thrustForce->getDirection().y, -1));
 		break;
-	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(0, 0, -1));
+	case OF_KEY_DOWN: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, thrustForce->getDirection().y, 1));
 		break;
-	case OF_KEY_DOWN: thrustForce->setDirection(ofVec3f(0, 0, 1));
+	case OF_KEY_LEFT: thrustForce->setDirection(ofVec3f(-1, thrustForce->getDirection().y, thrustForce->getDirection().z));
 		break;
-	case OF_KEY_LEFT: thrustForce->setDirection(ofVec3f(-1, 0, 0));
-		break;
-	case OF_KEY_RIGHT: thrustForce->setDirection(ofVec3f(1, 0, 0));
+	case OF_KEY_RIGHT: thrustForce->setDirection(ofVec3f(1, thrustForce->getDirection().y, thrustForce->getDirection().z));
 		break;
 	case OF_KEY_F1: currCam = &shipCam;
 		break;
@@ -316,7 +317,17 @@ void ofApp::keyReleased(int key) {
 	case OF_KEY_CONTROL:
 		bCtrlKeyDown = false;
 		break;
-	case OF_KEY_SHIFT:
+	case OF_KEY_SHIFT: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 0, thrustForce->getDirection().z));
+		break;
+	case ' ': thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 0, thrustForce->getDirection().z));
+		break;
+	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, thrustForce->getDirection().y, 0));
+		break;
+	case OF_KEY_DOWN: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, thrustForce->getDirection().y, 0));
+		break;
+	case OF_KEY_LEFT: thrustForce->setDirection(ofVec3f(0, thrustForce->getDirection().y, thrustForce->getDirection().z));
+		break;
+	case OF_KEY_RIGHT: thrustForce->setDirection(ofVec3f(0, thrustForce->getDirection().y, thrustForce->getDirection().z));
 		break;
 	default:
 		break;

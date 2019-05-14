@@ -66,4 +66,6 @@ public:
 	void updateForce(Particle *);
 	void setMagnitude(float mag) { magnitude = mag; }
 	void setDirection(ofVec3f dir) { direction = dir; }
+	float getMagnitude() { return magnitude; }
+	ofVec3f getDirection() { return direction; }
 };
