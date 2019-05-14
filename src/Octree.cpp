@@ -117,26 +117,40 @@ void Octree::subDivideBox8(const Box &box, vector<Box> & boxList) {
 void Octree::create(const ofMesh & geo, int numLevels) {
 	// initialize octree structure
     root.box = meshBounds(geo);
-	for (int i = 0; i < geo.getNumIndices(); i++) {
-		root.points.push_back(geo.getIndex(i));
+	for (int i = 0; i < geo.getNumVertices(); i++) {
+		root.points.push_back(i);
 	}
     subdivide(geo, root, numLevels, 0);
 
 }
 
 void Octree::subdivide(const ofMesh & mesh, TreeNode & node, int numLevels, int level) {
-	if (level < numLevels && node.points.size() > 0) {
-		vector<Box> boxList;
-		subDivideBox8(node.box, boxList);
-		for (int i = 0; i < boxList.size(); i++) {
-			TreeNode* next = new TreeNode();
-			next->box = boxList.at(i);
-			getMeshPointsInBox(mesh, node.points, next->box, next->points);
-			if (next->points.size() > 1)
-				subdivide(mesh, *next, numLevels, ++level);
-			if(next->points.size() != 0)
-				node.children.push_back(*next);
+	if (level >= numLevels)
+		return;
+	vector<Box> boxList;
+	subDivideBox8(node.box, boxList);
+	level++;
+	for (int i = 0; i < boxList.size(); i++) {
+		// Kevin Smith's code
+		TreeNode child;
+		int count = getMeshPointsInBox(mesh, node.points, boxList[i], child.points);
+		if (count > 0) {
+			child.box = boxList[i];
+			node.children.push_back(child);
+			if (count > 1) {
+				subdivide(mesh, node.children[node.children.size() - 1], numLevels, level);
+			}
 		}
+
+
+		// Brandon's code
+		/*TreeNode* next = new TreeNode();
+		next->box = boxList.at(i);
+		getMeshPointsInBox(mesh, node.points, next->box, next->points);
+		if (next->points.size() > 1)
+			subdivide(mesh, *next, numLevels, level++);
+		if(next->points.size() != 0)
+			node.children.push_back(*next);*/
 	}
 }
 

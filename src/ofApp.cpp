@@ -68,12 +68,22 @@ void ofApp::setup(){
 	pSys.addForce(gravityForce);
 	pSys.addForce(thrustForce);
 
-	// set up ship follow cam
-	currCam = &shipCam;
-
-	shipCam.setPosition(glm::vec3(pSys.particles[0].position.x - 50, pSys.particles[0].position.y, pSys.particles[0].position.z));
-	shipCam.setFov(90);
-	shipCam.setNearClip(.1);
+	// set up the cameras
+	currCam = &followCam;
+	followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
+	followCam.setFov(90);
+	followCam.setNearClip(.1);
+	leftSideCam.setPosition(glm::vec3(pSys.particles[0].position.x - 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
+	leftSideCam.setFov(90);
+	rightSideCam.setPosition(glm::vec3(pSys.particles[0].position.x + 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
+	rightSideCam.setFov(90);
+	frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
+	frontCam.setFov(90);
+	bottomCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z));
+	bottomCam.setFov(90);
+	trackingCam.setPosition(glm::vec3(500, 500, 500));
+	trackingCam.setFov(90);
+	trackingCam.setOrientation(pSys.particles[0].position);
 
 	gui.setup();
 	gui.add(numLevels.setup("levels", 10, 1, 30));
@@ -111,7 +121,9 @@ void ofApp::setup(){
 //
 void ofApp::update() {
 	if (!isPaused) {
-		shipCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
+		// update cameras
+		followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
+		trackingCam.setOrientation(pSys.particles[0].position);
 		currLevel = (int)numLevels;
 		pSys.update();
 		rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
@@ -128,7 +140,7 @@ void ofApp::draw(){
 	ofSetColor(ofColor::white);
 	sphere.draw();
 	currCam->begin();
-	shipCam.draw();
+	followCam.draw();
 	ofPushMatrix();
 	if (bWireframe) {                    // wireframe mode  (include axis)
 		ofDisableLighting();
@@ -285,7 +297,7 @@ void ofApp::keyPressed(int key) {
 		break;
 	case OF_KEY_RIGHT: thrustForce->setDirection(ofVec3f(1, thrustForce->getDirection().y, thrustForce->getDirection().z));
 		break;
-	case OF_KEY_F1: currCam = &shipCam;
+	case OF_KEY_F1: currCam = &followCam;
 		break;
 	case OF_KEY_F2: currCam = &cam;
 		break;

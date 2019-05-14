@@ -44,7 +44,13 @@ class ofApp : public ofBaseApp{
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
 		ofEasyCam cam;
-		ofCamera shipCam;
+		ofCamera followCam;
+		ofCamera leftSideCam;
+		ofCamera rightSideCam;
+		ofCamera frontCam;
+		ofCamera bottomCam;
+		ofCamera surfaceCam;
+		ofCamera trackingCam;
 		ofCamera* currCam;
 		ofxAssimpModelLoader terrain, rocket;
 		ofLight light;
