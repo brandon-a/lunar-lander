@@ -60,10 +60,11 @@ void ofApp::setup(){
 
 	turbForce = new TurbulenceForce(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
 	gravityForce = new GravityForce(ofVec3f(0, -10, 0));
-
+	thrustForce = new ThrustForce(ofVec3f(0, 0, 0), 20.0);
 
 	pSys.addForce(turbForce);
 	pSys.addForce(gravityForce);
+	pSys.addForce(thrustForce);
 
 	gui.setup();
 	gui.add(numLevels.setup("levels", 10, 1, 30));
@@ -260,9 +261,19 @@ void ofApp::keyPressed(int key) {
 	case OF_KEY_CONTROL:
 		bCtrlKeyDown = true;
 		break;
-	case OF_KEY_SHIFT:
+	case OF_KEY_SHIFT: thrustForce->setDirection(ofVec3f(0, -1, 0));
 		break;
-	case OF_KEY_DEL:
+	case ' ': thrustForce->setDirection(ofVec3f(0, 1, 0));
+		break;
+	case OF_KEY_DEL: 
+		break;
+	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(0, 0, 1));
+		break;
+	case OF_KEY_DOWN: thrustForce->setDirection(ofVec3f(0, 0, -1));
+		break;
+	case OF_KEY_LEFT: thrustForce->setDirection(ofVec3f(1, 0, 0));
+		break;
+	case OF_KEY_RIGHT: thrustForce->setDirection(ofVec3f(-1, 0, 0));
 		break;
 	default:
 		break;
