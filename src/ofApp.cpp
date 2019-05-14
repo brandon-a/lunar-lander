@@ -59,7 +59,7 @@ void ofApp::setup(){
 	pSys.particles[0].mass = 10;
 
 	turbForce = new TurbulenceForce(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
-	gravityForce = new GravityForce(ofVec3f(0, 5, 0));
+	gravityForce = new GravityForce(ofVec3f(0, -10, 0));
 
 
 	pSys.addForce(turbForce);
