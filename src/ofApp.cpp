@@ -52,6 +52,7 @@ void ofApp::setup(){
 
 	ship = new Particle();
 
+	// set up forces for ship
 	pSys.add(*ship);
 	pSys.particles[0].position = ofVec3f(0, 1000, 0);
 	pSys.particles[0].velocity = ofVec3f(0, 0, 0);
@@ -60,11 +61,18 @@ void ofApp::setup(){
 
 	turbForce = new TurbulenceForce(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
 	gravityForce = new GravityForce(ofVec3f(0, -10, 0));
-	thrustForce = new ThrustForce(ofVec3f(0, 0, 0), 20.0);
+	thrustForce = new ThrustForce(ofVec3f(0, 0, 0), 60.0);
 
 	pSys.addForce(turbForce);
 	pSys.addForce(gravityForce);
 	pSys.addForce(thrustForce);
+
+	// set up ship follow cam
+	currCam = &shipCam;
+
+	shipCam.setPosition(glm::vec3(pSys.particles[0].position.x - 50, pSys.particles[0].position.y, pSys.particles[0].position.z));
+	shipCam.setFov(90);
+	shipCam.setNearClip(.1);
 
 	gui.setup();
 	gui.add(numLevels.setup("levels", 10, 1, 30));
@@ -101,10 +109,10 @@ void ofApp::setup(){
 // incrementally update scene (animation)
 //
 void ofApp::update() {
+	shipCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
 	currLevel = (int) numLevels;
 	pSys.update();
 	rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
-	cout << pSys.particles[0].position.x << " " << pSys.particles[0].position.y << " " << pSys.particles[0].position.z << endl;
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -116,7 +124,8 @@ void ofApp::draw(){
 //	cout << ofGetFrameRate() << endl;
 	ofSetColor(ofColor::white);
 	sphere.draw();
-	cam.begin();
+	currCam->begin();
+	shipCam.draw();
 	ofPushMatrix();
 	if (bWireframe) {                    // wireframe mode  (include axis)
 		ofDisableLighting();
@@ -185,7 +194,7 @@ void ofApp::draw(){
 		drawBox(level4[i]);*/
 
 	ofPopMatrix();
-	cam.end();
+	currCam->end();
 }
 
 // 
@@ -267,13 +276,17 @@ void ofApp::keyPressed(int key) {
 		break;
 	case OF_KEY_DEL: 
 		break;
-	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(0, 0, 1));
+	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(0, 0, -1));
 		break;
-	case OF_KEY_DOWN: thrustForce->setDirection(ofVec3f(0, 0, -1));
+	case OF_KEY_DOWN: thrustForce->setDirection(ofVec3f(0, 0, 1));
 		break;
-	case OF_KEY_LEFT: thrustForce->setDirection(ofVec3f(1, 0, 0));
+	case OF_KEY_LEFT: thrustForce->setDirection(ofVec3f(-1, 0, 0));
 		break;
-	case OF_KEY_RIGHT: thrustForce->setDirection(ofVec3f(-1, 0, 0));
+	case OF_KEY_RIGHT: thrustForce->setDirection(ofVec3f(1, 0, 0));
+		break;
+	case OF_KEY_F1: currCam = &shipCam;
+		break;
+	case OF_KEY_F2: currCam = &cam;
 		break;
 	default:
 		break;
