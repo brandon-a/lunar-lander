@@ -53,10 +53,10 @@ class ofApp : public ofBaseApp{
 		ofxPanel gui;
 		ofSpherePrimitive sphere;
 		ParticleSystem pSys;
-		Particle ship;
+		Particle* ship;
 
-		TurbulenceForce turbForce;
-		GravityForce gravityForce;
+		TurbulenceForce* turbForce;
+		GravityForce* gravityForce;
 
 		bool bAltKeyDown;
 		bool bCtrlKeyDown;

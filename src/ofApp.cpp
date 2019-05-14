@@ -50,16 +50,20 @@ void ofApp::setup(){
 	ofEnableDepthTest();
 	sphere.setRadius(50);
 
-	ship.lifespan = -1;
-	ship.mass = 100;
+	ship = new Particle();
 
-	//turbForce.set(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
-	//gravityForce.setGravity(ofVec3f(0, 100, 0));
+	pSys.add(*ship);
+	pSys.particles[0].position = ofVec3f(0, 1000, 0);
+	pSys.particles[0].velocity = ofVec3f(0, 0, 0);
+	pSys.particles[0].lifespan = -1;
+	pSys.particles[0].mass = 10;
 
-	//pSys.add(ship);
+	turbForce = new TurbulenceForce(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
+	gravityForce = new GravityForce(ofVec3f(0, 5, 0));
 
-	//pSys.addForce(&turbForce);
-	//pSys.addForce(&gravityForce);
+
+	pSys.addForce(turbForce);
+	pSys.addForce(gravityForce);
 
 	gui.setup();
 	gui.add(numLevels.setup("levels", 10, 1, 30));
@@ -98,8 +102,8 @@ void ofApp::setup(){
 void ofApp::update() {
 	currLevel = (int) numLevels;
 	pSys.update();
-	rocket.setPosition(ship.position.x, ship.position.y, ship.position.z);
-	cout << ship.position << endl;
+	rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
+	cout << pSys.particles[0].position.x << " " << pSys.particles[0].position.y << " " << pSys.particles[0].position.z << endl;
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
