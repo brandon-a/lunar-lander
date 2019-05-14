@@ -147,10 +147,10 @@ void ofApp::draw(){
 		ofSetColor(ofColor::slateGray);
 		terrain.drawWireframe();
 		ofSetColor(ofColor::white);
-		if(leaf)
+		/*if(leaf)
 			octree.drawLeafNodes(octree.root);
 		else
-			octree.draw(currLevel, 0);
+			octree.draw(currLevel, 0);*/
 		if (bRoverLoaded) {
 			rocket.drawWireframe();
 			if (!bTerrainSelected) drawAxis(rocket.getPosition());
@@ -160,10 +160,10 @@ void ofApp::draw(){
 	else {
 		ofEnableLighting();              // shaded mode
 		terrain.drawFaces();
-		if (leaf)
+		/*if (leaf)
 			octree.drawLeafNodes(octree.root);
 		else
-			octree.draw(currLevel, 0);
+			octree.draw(currLevel, 0);*/
 		if (bRoverLoaded) {
 			rocket.drawFaces();
 			if (!bTerrainSelected) drawAxis(rocket.getPosition());

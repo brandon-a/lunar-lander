@@ -141,8 +141,6 @@ void Octree::subdivide(const ofMesh & mesh, TreeNode & node, int numLevels, int 
 				subdivide(mesh, node.children[node.children.size() - 1], numLevels, level);
 			}
 		}
-
-
 		// Brandon's code
 		/*TreeNode* next = new TreeNode();
 		next->box = boxList.at(i);
