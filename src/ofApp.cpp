@@ -439,7 +439,6 @@ void ofApp::mousePressed(int x, int y, int button) {
 }
 // Code by Brandon Archbold
 void ofApp::altitudeDetection() {
-    rocket
 	ofVec3f shipPos = pSys.particles[0].position;
     ofVec3f rayPoint = ofVec3f(shipPos.x, shipPos.y - 30, shipPos.z);
     ofVec3f rayDir = rayPoint - ofVec3f(shipPos.x, shipPos.y, shipPos.z);
