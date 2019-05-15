@@ -31,3 +31,4 @@ Project.xcconfig
 config.make
 lunar-lander.xcodeproj/
 openFrameworks-Info.plist
+bin/lunar-landerDebug.app/

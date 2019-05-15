@@ -62,9 +62,10 @@ void ofApp::setup(){
 	pSys.particles[0].lifespan = -1;
 	pSys.particles[0].mass = 10;
 
+    ofVec3f temp = ofVec3f(0, 0, 0);
 	turbForce = new TurbulenceForce(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
 	gravityForce = new GravityForce(ofVec3f(0, -10, 0));
-	thrustForce = new ThrustForce(ofVec3f(0, 0, 0), 200.0);
+	thrustForce = new ThrustForce(temp, 200.0);
 
 	pSys.addForce(turbForce);
 	pSys.addForce(gravityForce);
