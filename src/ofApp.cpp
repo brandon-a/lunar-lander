@@ -51,6 +51,8 @@ void ofApp::setup(){
 	ofEnableDepthTest();
 	sphere.setRadius(50);
 
+	altitude = -1;
+	// Code by Brandon Archbold
 	ship = new Particle();
 
 	// set up forces for ship
@@ -62,12 +64,12 @@ void ofApp::setup(){
 
 	turbForce = new TurbulenceForce(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
 	gravityForce = new GravityForce(ofVec3f(0, -10, 0));
-	thrustForce = new ThrustForce(ofVec3f(0, 0, 0), 60.0);
+	thrustForce = new ThrustForce(ofVec3f(0, 0, 0), 200.0);
 
 	pSys.addForce(turbForce);
 	pSys.addForce(gravityForce);
 	pSys.addForce(thrustForce);
-
+	// Code by Brandon Archbold
 	// set up the cameras
 	currCam = &followCam;
 	followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
@@ -111,7 +113,7 @@ void ofApp::setup(){
 		cout << "Particle Texture File: images/dot.png not found" << endl;
 		ofExit();
 	}
-
+	// Code by Brandon Archbold
 	// load the shader
 	//
 #ifdef TARGET_OPENGLES
@@ -119,24 +121,22 @@ void ofApp::setup(){
 #else
 	shader.load("shaders/shader");
 #endif
-
+	// Code by Brandon Archbold
 	exhastParticles.sys->addForce(new TurbulenceForce(ofVec3f(-200, -200, -200), ofVec3f(200, 200, 200)));
 	exhastParticles.sys->addForce(new GravityForce(ofVec3f(0, -50, 0)));
-
+	
 	exhastParticles.setVelocity(ofVec3f(0, 0, 0));
 	exhastParticles.setEmitterType(DirectionalEmitter);
 	exhastParticles.setGroupSize(50);
 	exhastParticles.setLifespan(1);
 	exhastParticles.setPosition(ofVec3f(0, 0, 0));
-	exhastParticles.setVelocity(ofVec3f(0, -5, 0));
+	exhastParticles.setVelocity(ofVec3f(0, -50, 0));
 	exhastParticles.setRate(50);
 
 	if (!thrustSound.load("sounds/347575__djt4nn3r__thrusters-loopamplified.wav"))			// sound from: https://freesound.org/people/DJT4NN3R/sounds/347575/
 		ofExit();
-
-
 	octree.create(terrain.getMesh("pPlane1"), (int) numLevels);
-
+	// Code by Brandon Archbold
 }
 
 //--------------------------------------------------------------
@@ -145,13 +145,16 @@ void ofApp::setup(){
 void ofApp::update() {
 	if (!isPaused) {
 		// update cameras
+		// Code by Brandon Archbold
 		followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
 		trackingCam.setOrientation(pSys.particles[0].position);
 		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
 		currLevel = (int)numLevels;
 		pSys.update();
+		altitudeDetection();
 		rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
+		// Code by Brandon Archbold
 	}
 }
 //--------------------------------------------------------------
@@ -163,10 +166,9 @@ void ofApp::draw(){
 	
 //	cout << ofGetFrameRate() << endl;
 	ofSetColor(ofColor::white);
-	sphere.draw();
+	//sphere.draw();
 	loadVbo();
 	currCam->begin();
-	followCam.draw();
 	ofPushMatrix();
 	if (bWireframe) {                    // wireframe mode  (include axis)
 		ofDisableLighting();
@@ -210,7 +212,7 @@ void ofApp::draw(){
 		ofSetColor(ofColor::blue);
 		ofDrawSphere(selectedPoint, .1);
 	}
-	
+	// Code by Brandon Archbold adapted from shader example in class
 	ofNoFill();
 	ofSetColor(ofColor::white);
 	
@@ -252,13 +254,15 @@ void ofApp::draw(){
 	// set back the depth mask
 	//
 	glDepthMask(GL_TRUE);
-
+	// Code by Brandon Archbold adapted from shader example in class
 	// draw screen data
 	//
 	string str;
-	str += "Frame Rate: " + std::to_string(ofGetFrameRate());
+	str += "FPS: " + std::to_string(ofGetFrameRate());
 	ofSetColor(ofColor::white);
 	ofDrawBitmapString(str, ofGetWindowWidth() - 170, 15);
+	string str2 = "Altitude: " + std::to_string(altitude);
+	ofDrawBitmapString(str2, 0, 15);
 }
 
 // 
@@ -309,7 +313,7 @@ void ofApp::keyPressed(int key) {
 		cam.reset();
 		break;
 	case 's':
-		savePicture();
+		//savePicture();
 		break;
 	case 'l':
 		leaf = !leaf;
@@ -334,6 +338,7 @@ void ofApp::keyPressed(int key) {
 	case OF_KEY_CONTROL:
 		bCtrlKeyDown = true;
 		break;
+		// Code by Brandon Archbold
 	case OF_KEY_SHIFT: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, -1, thrustForce->getDirection().z));
 		break;
 	case ' ': thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 1, thrustForce->getDirection().z));
@@ -353,6 +358,7 @@ void ofApp::keyPressed(int key) {
 		break;
 	case OF_KEY_F2: currCam = &cam;
 		break;
+		// Code by Brandon Archbold
 	default:
 		break;
 	}
@@ -381,6 +387,7 @@ void ofApp::keyReleased(int key) {
 	case OF_KEY_CONTROL:
 		bCtrlKeyDown = false;
 		break;
+		// Code by Brandon Archbold
 	case OF_KEY_SHIFT: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 0, thrustForce->getDirection().z));
 		break;
 	case ' ': thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 0, thrustForce->getDirection().z));
@@ -395,6 +402,7 @@ void ofApp::keyReleased(int key) {
 		break;
 	case OF_KEY_RIGHT: thrustForce->setDirection(ofVec3f(0, thrustForce->getDirection().y, thrustForce->getDirection().z));
 		break;
+		// Code by Brandon Archbold
 	default:
 		break;
 
@@ -407,12 +415,12 @@ void ofApp::keyReleased(int key) {
 void ofApp::mouseMoved(int x, int y ){
 }
 
-
+// Code by Brandon Archbold
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
     ofVec3f mouse(mouseX, mouseY);
-	ofVec3f rayPoint = cam.screenToWorld(mouse);
-	ofVec3f rayDir = rayPoint - cam.getPosition();
+	ofVec3f rayPoint = currCam->screenToWorld(mouse);
+	ofVec3f rayDir = rayPoint - currCam->getPosition();
 	rayDir.normalize();
 	Ray ray = Ray(Vector3(rayPoint.x, rayPoint.y, rayPoint.z), Vector3(rayDir.x, rayDir.y, rayDir.z));
 	TreeNode nodeRtn;
@@ -421,82 +429,34 @@ void ofApp::mousePressed(int x, int y, int button) {
 	uint64_t start = time->getAsMilliseconds();
 	if (octree.intersect(ray, octree.root, nodeRtn)) {
 		ofVec3f pos = terrain.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
-		sphere.setPosition(pos);
+		sphere.setGlobalPosition(pos);
 		cout << "Intersects at: " << pos << endl;
 		end = time->getAsMilliseconds();
 		uint64_t total = end - start;
 		cout << "Selection time: " << total << "ms\n";
 	}
 }
+// Code by Brandon Archbold
+void ofApp::altitudeDetection() {
+	ofVec3f shipPos = pSys.particles[0].position;
+	if (shipPos.y >= 0) {
+		ofVec3f rayPoint = ofVec3f(shipPos.x, shipPos.y - 30, shipPos.z);
+		ofVec3f rayDir = rayPoint - ofVec3f(shipPos.x, shipPos.y, shipPos.z);
+		rayDir.normalize();
+		Ray ray = Ray(Vector3(rayPoint.x, rayPoint.y, rayPoint.z), Vector3(rayDir.x, rayDir.y, rayDir.z));
+		TreeNode nodeRtn;
+		if (octree.intersect(ray, octree.root, nodeRtn)) {
+			if (nodeRtn.points.size() != 0) {
+				ofVec3f pos = terrain.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
+				altitude = pos.y;
+			}
+		}
+	}
+	else
+		altitude = -1;
+}
+// Code by Brandon Archbold
 
-
-////draw a box from a "Box" class  
-////
-//void ofApp::drawBox(const Box &box) {
-//	Vector3 min = box.parameters[0];
-//	Vector3 max = box.parameters[1];
-//	Vector3 size = max - min;
-//	Vector3 center = size / 2 + min;
-//	ofVec3f p = ofVec3f(center.x(), center.y(), center.z());
-//	float w = size.x();
-//	float h = size.y();
-//	float d = size.z();
-//	ofDrawBox(p, w, h, d);
-//}
-//
-//// return a Mesh Bounding Box for the entire Mesh
-////
-//Box ofApp::meshBounds(const ofMesh & mesh) {
-//	int n = mesh.getNumVertices();
-//	ofVec3f v = mesh.getVertex(0);
-//	ofVec3f max = v;
-//	ofVec3f min = v;
-//	for (int i = 1; i < n; i++) {
-//		ofVec3f v = mesh.getVertex(i);
-//
-//		if (v.x > max.x) max.x = v.x;
-//		else if (v.x < min.x) min.x = v.x;
-//
-//		if (v.y > max.y) max.y = v.y;
-//		else if (v.y < min.y) min.y = v.y;
-//
-//		if (v.z > max.z) max.z = v.z;
-//		else if (v.z < min.z) min.z = v.z;
-//	}
-//	return Box(Vector3(min.x, min.y, min.z), Vector3(max.x, max.y, max.z));
-//}
-//
-////  Subdivide a Box into eight(8) equal size boxes, return them in boxList;
-////
-//void ofApp::subDivideBox8(const Box &box, vector<Box> & boxList) {
-//	Vector3 min = box.parameters[0];
-//	Vector3 max = box.parameters[1];
-//	Vector3 size = max - min;
-//	Vector3 center = size / 2 + min;
-//	float xdist = (max.x() - min.x()) / 2;
-//	float ydist = (max.y() - min.y()) / 2;
-//	float zdist = (max.z() - min.z()) / 2;
-//	Vector3 h = Vector3(0, ydist, 0);
-//
-//	//  generate ground floor
-//	//
-//	Box b[8];
-//	b[0] = Box(min, center);
-//	b[1] = Box(b[0].min() + Vector3(xdist, 0, 0), b[0].max() + Vector3(xdist, 0, 0));
-//	b[2] = Box(b[1].min() + Vector3(0, 0, zdist), b[1].max() + Vector3(0, 0, zdist));
-//	b[3] = Box(b[2].min() + Vector3(-xdist, 0, 0), b[2].max() + Vector3(-xdist, 0, 0));
-//
-//	boxList.clear();
-//	for (int i = 0; i < 4; i++)
-//		boxList.push_back(b[i]);
-//
-//	// generate second story
-//	//
-//	for (int i = 4; i < 8; i++) {
-//		b[i] = Box(b[i - 4].min() + h, b[i - 4].max() + h);
-//		boxList.push_back(b[i]);
-//	}
-//}
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {

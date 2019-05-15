@@ -42,6 +42,7 @@ class ofApp : public ofBaseApp{
 		Box meshBounds(const ofMesh &);
 		void subDivideBox8(const Box &b, vector<Box> & boxList);
 		void loadVbo();
+		void altitudeDetection();
 
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
@@ -90,6 +91,6 @@ class ofApp : public ofBaseApp{
 		ofVec3f selectedPoint;
 		ofVec3f intersectPoint;
 
-
+		float altitude;
 		const float selectionRange = 4.0;
 };
