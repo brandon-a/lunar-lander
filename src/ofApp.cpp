@@ -120,14 +120,16 @@ void ofApp::setup(){
 	shader.load("shaders/shader");
 #endif
 
-	exhastParticles.sys->addForce(new TurbulenceForce(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20)));
+	exhastParticles.sys->addForce(new TurbulenceForce(ofVec3f(-200, -200, -200), ofVec3f(200, 200, 200)));
 	exhastParticles.sys->addForce(new GravityForce(ofVec3f(0, -50, 0)));
 
 	exhastParticles.setVelocity(ofVec3f(0, 0, 0));
 	exhastParticles.setEmitterType(DirectionalEmitter);
-	exhastParticles.setGroupSize(1000);
-	exhastParticles.setLifespan(2);
+	exhastParticles.setGroupSize(50);
+	exhastParticles.setLifespan(1);
 	exhastParticles.setPosition(ofVec3f(0, 0, 0));
+	exhastParticles.setVelocity(ofVec3f(0, -5, 0));
+	exhastParticles.setRate(50);
 
 	octree.create(terrain.getMesh("pPlane1"), (int) numLevels);
 
@@ -150,6 +152,7 @@ void ofApp::update() {
 		// update cameras
 		followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
 		trackingCam.setOrientation(pSys.particles[0].position);
+		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 20, pSys.particles[0].position.z));
 		exhastParticles.update();
 		currLevel = (int)numLevels;
 		pSys.update();
