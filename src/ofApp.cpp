@@ -457,22 +457,19 @@ void ofApp::mousePressed(int x, int y, int button) {
 }
 // Code by Brandon Archbold
 void ofApp::altitudeDetection() {
+    rocket
 	ofVec3f shipPos = pSys.particles[0].position;
-	if (shipPos.y >= 0) {
-		ofVec3f rayPoint = ofVec3f(shipPos.x, shipPos.y - 30, shipPos.z);
-		ofVec3f rayDir = rayPoint - ofVec3f(shipPos.x, shipPos.y, shipPos.z);
-		rayDir.normalize();
-		Ray ray = Ray(Vector3(rayPoint.x, rayPoint.y, rayPoint.z), Vector3(rayDir.x, rayDir.y, rayDir.z));
-		TreeNode nodeRtn;
-		if (octree.intersect(ray, octree.root, nodeRtn)) {
-			if (nodeRtn.points.size() != 0) {
-				ofVec3f pos = terrain.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
-				altitude = pos.y;
-			}
-		}
-	}
-	else
-		altitude = -1;
+    ofVec3f rayPoint = ofVec3f(shipPos.x, shipPos.y - 30, shipPos.z);
+    ofVec3f rayDir = rayPoint - ofVec3f(shipPos.x, shipPos.y, shipPos.z);
+    rayDir.normalize();
+    Ray ray = Ray(Vector3(rayPoint.x, rayPoint.y, rayPoint.z), Vector3(rayDir.x, rayDir.y, rayDir.z));
+    TreeNode nodeRtn;
+    if (octree.intersect(ray, octree.root, nodeRtn)) {
+        if (nodeRtn.points.size() != 0) {
+            ofVec3f pos = terrain.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
+            altitude = shipPos.y + abs(pos.y);
+        }
+    }
 }
 // Code by Brandon Archbold
 
