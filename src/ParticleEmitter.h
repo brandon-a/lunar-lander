@@ -25,6 +25,7 @@ public:
 	void setEmitterType(EmitterType t) { type = t; }
 	void setGroupSize(int s) { groupSize = s; }
 	void setOneShot(bool s) { oneShot = s; }
+	void setPosition(const ofVec3f&);
 	void update();
 	void spawn(float time);
 	ParticleSystem *sys;

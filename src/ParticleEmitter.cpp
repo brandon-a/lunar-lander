@@ -42,7 +42,9 @@ void ParticleEmitter::init() {
 	groupSize = 1;
 }
 
-
+void ParticleEmitter::setPosition(const ofVec3f& pos){
+	position = pos;
+}
 
 void ParticleEmitter::draw() {
 	if (visible) {

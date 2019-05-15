@@ -98,10 +98,38 @@ void ofApp::setup(){
 
 	if (rocket.loadModel("geo/models/rocket.obj"))
 		bRoverLoaded = true;
+	else {
+		cout << "geo/models/rocket.obj file not found\n";
+		ofExit();
+	}
 	rocket.setScaleNormalization(false);
 	rocket.setRotation(1, 180, 0, 0, 1);
+	ofDisableArbTex();
 
-	cout << terrain.getMeshNames()[0] << endl;
+	// load particle image
+	if (!ofLoadImage(particleTexture, "images/dot.png")) {
+		cout << "Particle Texture File: images/dot.png not found" << endl;
+		ofExit();
+	}
+
+	// load the shader
+	//
+#ifdef TARGET_OPENGLES
+	shader.load("shaders_gles/shader");
+#else
+	shader.load("shaders/shader");
+#endif
+
+	exhastParticles.sys->addForce(new TurbulenceForce(ofVec3f(-200, -200, -200), ofVec3f(200, 200, 200)));
+	exhastParticles.sys->addForce(new GravityForce(ofVec3f(0, -50, 0)));
+
+	exhastParticles.setVelocity(ofVec3f(0, 0, 0));
+	exhastParticles.setEmitterType(DirectionalEmitter);
+	exhastParticles.setGroupSize(50);
+	exhastParticles.setLifespan(1);
+	exhastParticles.setPosition(ofVec3f(0, 0, 0));
+	exhastParticles.setVelocity(ofVec3f(0, -5, 0));
+	exhastParticles.setRate(50);
 
 	octree.create(terrain.getMesh("pPlane1"), (int) numLevels);
 
@@ -124,6 +152,8 @@ void ofApp::update() {
 		// update cameras
 		followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
 		trackingCam.setOrientation(pSys.particles[0].position);
+		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 20, pSys.particles[0].position.z));
+		exhastParticles.update();
 		currLevel = (int)numLevels;
 		pSys.update();
 		rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
@@ -139,6 +169,7 @@ void ofApp::draw(){
 //	cout << ofGetFrameRate() << endl;
 	ofSetColor(ofColor::white);
 	sphere.draw();
+	loadVbo();
 	currCam->begin();
 	followCam.draw();
 	ofPushMatrix();
@@ -187,29 +218,52 @@ void ofApp::draw(){
 	
 	ofNoFill();
 	ofSetColor(ofColor::white);
-	//drawBox(boundingBox);
-
-	// Some debug code to test subdivideBox8
-	//
-
-	/*ofSetColor(ofColor::red);
-	for (int i=0; i < level1.size(); i++)
-		drawBox(level1[i]);
-
-	ofSetColor(ofColor::blue);
-	for (int i = 0; i < level2.size(); i++)
-		drawBox(level2[i]);
-
-	ofSetColor(ofColor::yellow);
-	for (int i = 0; i < level3.size(); i++)
-		drawBox(level3[i]);
-
-	ofSetColor(ofColor::white);
-	for (int i = 0; i < level3.size(); i++)
-		drawBox(level4[i]);*/
-
+	
 	ofPopMatrix();
 	currCam->end();
+
+
+	glDepthMask(GL_FALSE);
+
+	ofSetColor(255, 100, 90);
+
+	// this makes everything look glowy :)
+	//
+	ofEnableBlendMode(OF_BLENDMODE_ADD);
+	ofEnablePointSprites();
+
+
+	// begin drawing in the camera
+	//
+	shader.begin();
+	currCam->begin();
+
+	// draw particle emitter here..
+	//
+//	emitter.draw();
+	particleTexture.bind();
+	vbo.draw(GL_POINTS, 0, (int)exhastParticles.sys->particles.size());
+	particleTexture.unbind();
+
+	//  end drawing in the camera
+	// 
+	currCam->end();
+	shader.end();
+
+	ofDisablePointSprites();
+	ofDisableBlendMode();
+	ofEnableAlphaBlending();
+
+	// set back the depth mask
+	//
+	glDepthMask(GL_TRUE);
+
+	// draw screen data
+	//
+	string str;
+	str += "Frame Rate: " + std::to_string(ofGetFrameRate());
+	ofSetColor(ofColor::white);
+	ofDrawBitmapString(str, ofGetWindowWidth() - 170, 15);
 }
 
 // 
@@ -288,6 +342,7 @@ void ofApp::keyPressed(int key) {
 	case OF_KEY_SHIFT: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, -1, thrustForce->getDirection().z));
 		break;
 	case ' ': thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 1, thrustForce->getDirection().z));
+		exhastParticles.start();
 		break;
 	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, thrustForce->getDirection().y, -1));
 		break;
@@ -332,6 +387,7 @@ void ofApp::keyReleased(int key) {
 	case OF_KEY_SHIFT: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 0, thrustForce->getDirection().z));
 		break;
 	case ' ': thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 0, thrustForce->getDirection().z));
+		exhastParticles.stop();
 		break;
 	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, thrustForce->getDirection().y, 0));
 		break;
@@ -613,3 +669,22 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {
 //	rayDir.normalize();
 //	return (rayIntersectPlane(rayPoint, rayDir, planePoint, planeNorm, point));
 //}
+
+// load vertex buffer in preparation for rendering
+//
+void ofApp::loadVbo() {
+	if (exhastParticles.sys->particles.size() < 1) return;
+
+	vector<ofVec3f> sizes;
+	vector<ofVec3f> points;
+	for (int i = 0; i < exhastParticles.sys->particles.size(); i++) {
+		points.push_back(exhastParticles.sys->particles[i].position);
+		sizes.push_back(ofVec3f(5));
+	}
+	// upload the data to the vbo
+	//
+	int total = (int)points.size();
+	vbo.clear();
+	vbo.setVertexData(&points[0], total, GL_STATIC_DRAW);
+	vbo.setNormalData(&sizes[0], total, GL_STATIC_DRAW);
+}

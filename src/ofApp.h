@@ -10,6 +10,7 @@
 #include "ofxGui.h"
 #include "ParticleSystem.h"
 #include "Particle.h"
+#include "ParticleEmitter.h"
 
 class ofApp : public ofBaseApp{
 
@@ -40,6 +41,7 @@ class ofApp : public ofBaseApp{
 		void drawBox(const Box &box);
 		Box meshBounds(const ofMesh &);
 		void subDivideBox8(const Box &b, vector<Box> & boxList);
+		void loadVbo();
 
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
@@ -62,10 +64,15 @@ class ofApp : public ofBaseApp{
 		ofSpherePrimitive sphere;
 		ParticleSystem pSys;
 		Particle* ship;
+		ParticleEmitter exhastParticles;
 
 		TurbulenceForce* turbForce;
 		GravityForce* gravityForce;
 		ThrustForce* thrustForce;
+
+		ofTexture particleTexture;
+		ofVbo vbo;
+		ofShader shader;
 
 		bool bAltKeyDown;
 		bool bCtrlKeyDown;
