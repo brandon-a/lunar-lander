@@ -26,3 +26,8 @@ bin/.DS_Store
 bin/data/.DS_Store
 bin/data/geo/.DS_Store
 .vscode/
+Makefile
+Project.xcconfig
+config.make
+lunar-lander.xcodeproj/
+openFrameworks-Info.plist
