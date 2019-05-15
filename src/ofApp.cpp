@@ -155,7 +155,11 @@ void ofApp::update() {
 		pSys.update();
 		altitudeDetection();
 		rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
-		// Code by Brandon Archbold
+        // Code by Brandon Archbold
+        // Code by Abraham Kong
+        
+        // Code by Abraham Kong
+        
 	}
 }
 //--------------------------------------------------------------
@@ -360,6 +364,20 @@ void ofApp::keyPressed(int key) {
 	case OF_KEY_F2: currCam = &cam;
 		break;
 		// Code by Brandon Archbold
+        //Code by Abraham Kong
+    case OF_KEY_F3: currCam = &leftSideCam;
+        break;
+    case OF_KEY_F4: currCam = &rightSideCam;
+        break;
+    case OF_KEY_F5: currCam = &frontCam;
+        break;
+    case OF_KEY_F6: currCam = &bottomCam;
+        break;
+    case OF_KEY_F7: currCam = &surfaceCam;
+        break;
+    case OF_KEY_F8: currCam = &trackingCam;
+        break;
+        //Code by Abraham Kong
 	default:
 		break;
 	}
