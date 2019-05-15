@@ -131,17 +131,12 @@ void ofApp::setup(){
 	exhastParticles.setVelocity(ofVec3f(0, -5, 0));
 	exhastParticles.setRate(50);
 
+	if (!thrustSound.load("sounds/347575__djt4nn3r__thrusters-loopamplified.wav"))			// sound from: https://freesound.org/people/DJT4NN3R/sounds/347575/
+		ofExit();
+
+
 	octree.create(terrain.getMesh("pPlane1"), (int) numLevels);
 
-
-	//boundingBox = meshBounds(mars.getMesh(0));
-	
-	//  Test Box Subdivide
-	//
-	/*subDivideBox8(boundingBox, level1);
-	subDivideBox8(level1[0], level2);
-	subDivideBox8(level2[0], level3);
-	subDivideBox8(level3[0], level4);*/
 }
 
 //--------------------------------------------------------------
@@ -152,7 +147,7 @@ void ofApp::update() {
 		// update cameras
 		followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
 		trackingCam.setOrientation(pSys.particles[0].position);
-		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 20, pSys.particles[0].position.z));
+		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
 		currLevel = (int)numLevels;
 		pSys.update();
@@ -343,6 +338,8 @@ void ofApp::keyPressed(int key) {
 		break;
 	case ' ': thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 1, thrustForce->getDirection().z));
 		exhastParticles.start();
+		if(!thrustSound.isPlaying())
+			thrustSound.play();
 		break;
 	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, thrustForce->getDirection().y, -1));
 		break;
@@ -388,6 +385,7 @@ void ofApp::keyReleased(int key) {
 		break;
 	case ' ': thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 0, thrustForce->getDirection().z));
 		exhastParticles.stop();
+		thrustSound.stop();
 		break;
 	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, thrustForce->getDirection().y, 0));
 		break;

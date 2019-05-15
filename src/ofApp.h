@@ -65,6 +65,7 @@ class ofApp : public ofBaseApp{
 		ParticleSystem pSys;
 		Particle* ship;
 		ParticleEmitter exhastParticles;
+		ofSoundPlayer thrustSound;
 
 		TurbulenceForce* turbForce;
 		GravityForce* gravityForce;
