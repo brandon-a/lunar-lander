@@ -94,7 +94,8 @@ class ofApp : public ofBaseApp{
 
 		bool bRoverLoaded;
 		bool bTerrainSelected;
-	
+		bool bTargetShip;
+			
 		ofVec3f selectedPoint;
 		ofVec3f intersectPoint;
 		ofVec3f contactPt;
