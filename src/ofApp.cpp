@@ -578,6 +578,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
 // Set the camera to use the selected point as it's new target
 //  
 void ofApp::setCameraTarget() {
+    //Code by Abraham Kong
 	if (!bTargetShip && bPointSelected)
 		easyCam.setPosition(glm::vec3(selectedPoint.x, selectedPoint.y, selectedPoint.z));
 	else if (bTargetShip) {
