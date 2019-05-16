@@ -76,8 +76,8 @@ void ofApp::setup(){
 	followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
 	followCam.setFov(90);
 	followCam.setNearClip(.1);
-	leftSideCam.setPosition(glm::vec3(-1200, 0,2000));
-	leftSideCam.setFov(170);
+	leftSideCam.setPosition(glm::vec3(-1580, 0,1000));
+	leftSideCam.setFov(115);
 	rightSideCam.setPosition(glm::vec3(pSys.particles[0].position.x + 100, pSys.particles[0].position.y + 20, pSys.particles[0].position.z));
 	rightSideCam.setFov(90);
 	frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
@@ -112,7 +112,7 @@ void ofApp::setup(){
 //    rocketBottomLight.setDiffuseColor(ofFloatColor(.3, 0, 1));
 //    rocketBottomLight.setSpecularColor(ofFloatColor(1, 1, 1));
 //    rocketBottomLight.rotate(180, ofVec3f(0, 1, 0));
-//    rocketBottomLight.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y , pSys.particles[0].position.z);
+//    rocketBottomLight.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y , pSys.particles[0].position.z );
     // Code by Abraham Kong
     
 	// setup rudimentary lighting 
