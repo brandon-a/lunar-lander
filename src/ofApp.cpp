@@ -180,10 +180,10 @@ void ofApp::draw(){
 		ofSetColor(ofColor::slateGray);
 		terrain.drawWireframe();
 		ofSetColor(ofColor::white);
-		/*if(leaf)
-			octree.drawLeafNodes(octree.root);
-		else
-			octree.draw(currLevel, 0);*/
+        /*if(leaf)
+            octree.drawLeafNodes(octree.root);
+        else
+            octree.draw(currLevel, 0);*/
 		if (bRoverLoaded) {
 			rocket.drawWireframe();
 			if (!bTerrainSelected) drawAxis(rocket.getPosition());
@@ -466,7 +466,7 @@ void ofApp::altitudeDetection() {
     if (octree.intersect(ray, octree.root, nodeRtn)) {
         if (nodeRtn.points.size() != 0) {
             ofVec3f pos = terrain.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
-            altitude = shipPos.y + abs(pos.y);
+            altitude = shipPos.y - 30 + abs(pos.y);
         }
     }
 }
