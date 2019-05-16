@@ -59,6 +59,7 @@ class ofApp : public ofBaseApp{
 		ofCamera* currCam;
 		ofxAssimpModelLoader terrain, rocket;
 		ofLight light;
+        ofLight rocketBottomLight;
 		Box boundingBox;
 		vector<Box> level1, level2, level3, level4;
 		Octree octree;

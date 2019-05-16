@@ -76,9 +76,9 @@ void ofApp::setup(){
 	followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
 	followCam.setFov(90);
 	followCam.setNearClip(.1);
-	leftSideCam.setPosition(glm::vec3(pSys.particles[0].position.x - 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
-	leftSideCam.setFov(90);
-	rightSideCam.setPosition(glm::vec3(pSys.particles[0].position.x + 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
+	leftSideCam.setPosition(glm::vec3(-1580, 0,1000));
+	leftSideCam.setFov(115);
+	rightSideCam.setPosition(glm::vec3(pSys.particles[0].position.x + 100, pSys.particles[0].position.y + 20, pSys.particles[0].position.z));
 	rightSideCam.setFov(90);
 	frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
 	frontCam.setFov(90);
@@ -91,6 +91,30 @@ void ofApp::setup(){
 	gui.setup();
 	gui.add(numLevels.setup("levels", 10, 1, 30));
 
+    // setup rocketBottomLight
+    // Code by Abraham Kong
+//    rocketBottomLight.setup();
+//    rocketBottomLight.enable();
+//    rocketBottomLight.setSpotlight();
+//    rocketBottomLight.setscale
+//    rocketBottomLight.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y , pSys.particles[0].position.z);
+//    rocketBottomLight.setDirectional();
+//    rocketBottomLight.setAreaLight(100, 100);
+    
+    
+//    rocketBottomLight.setup();
+//    rocketBottomLight.enable();
+//    rocketBottomLight.setSpotlight();
+//    rocketBottomLight.setScale(.05);
+//    rocketBottomLight.setSpotlightCutOff(30);
+//    rocketBottomLight.setAttenuation(.2, .001, .001);
+//    rocketBottomLight.setAmbientColor(ofFloatColor(0.1, 0.1, 0.1));
+//    rocketBottomLight.setDiffuseColor(ofFloatColor(.3, 0, 1));
+//    rocketBottomLight.setSpecularColor(ofFloatColor(1, 1, 1));
+//    rocketBottomLight.rotate(180, ofVec3f(0, 1, 0));
+//    rocketBottomLight.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y , pSys.particles[0].position.z );
+    // Code by Abraham Kong
+    
 	// setup rudimentary lighting 
 	//
 	initLightingAndMaterials();
@@ -229,7 +253,7 @@ void ofApp::draw(){
 	
 	ofPopMatrix();
 	currCam->end();
-
+    
 
 	glDepthMask(GL_FALSE);
 
@@ -249,6 +273,7 @@ void ofApp::draw(){
 	// draw particle emitter here..
 	//
 //	emitter.draw();
+//    rocketBottomLight.draw();
 	particleTexture.bind();
 	vbo.draw(GL_POINTS, 0, (int)exhastParticles.sys->particles.size());
 	particleTexture.unbind();
