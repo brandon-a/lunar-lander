@@ -48,7 +48,7 @@ class ofApp : public ofBaseApp{
 
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
-		ofEasyCam cam;
+		ofEasyCam easyCam;
 		ofCamera followCam;
 		ofCamera leftSideCam;
 		ofCamera rightSideCam;
@@ -79,6 +79,7 @@ class ofApp : public ofBaseApp{
 		ofTexture particleTexture;
 		ofVbo vbo;
 		ofShader shader;
+		ofImage backgroundImage;
 
 		bool bAltKeyDown;
 		bool bCtrlKeyDown;
@@ -89,6 +90,7 @@ class ofApp : public ofBaseApp{
 		int	currLevel;
 		bool isPaused;
 		bool bCollision;
+		bool bBackgroundLoaded;
 
 		bool bRoverLoaded;
 		bool bTerrainSelected;

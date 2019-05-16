@@ -42,17 +42,25 @@ void ofApp::setup(){
 	leaf = true;
 	isPaused = false;
 //	ofSetWindowShape(1024, 768);
-	cam.setDistance(10);
-	cam.setNearClip(.1);
-	cam.setFov(65.5);   // approx equivalent to 28mm in 35mm format
+	easyCam.setDistance(10);
+	easyCam.setNearClip(.1);
+	easyCam.setFov(65.5);   // approx equivalent to 28mm in 35mm format
 	ofSetVerticalSync(true);
-	cam.disableMouseInput();
+	easyCam.disableMouseInput();
 	ofEnableSmoothing();
 	ofEnableDepthTest();
 	sphere.setRadius(50);
 
 	altitude = -1;
 	// Code by Brandon Archbold
+
+	if (!backgroundImage.load("images/sky-star-dark-constellation-color-space-blue-galaxy-nebula-outer-space-background-astronomy-stars-universe-photoshop-fantasy-pretty-astronomical-object-610854.jpg")) { // image from: https://pxhere.com/en/photo/610854
+		bBackgroundLoaded = false;
+		cout << "Backround image failed to load\n";
+	}
+	else
+		bBackgroundLoaded = true;
+
 	ship = new Particle();
 
 	// set up forces for ship
@@ -73,29 +81,29 @@ void ofApp::setup(){
 	pSys.addForce(&impulseForce);
 	// Code by Brandon Archbold
     // set up the cameras
+	glm::vec3 shipPos = pSys.particles[0].position;
     currCam = &followCam;
-    followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
+    followCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z + 90));
     followCam.setFov(90);
     followCam.setNearClip(.1);
-    //Code by Abraham Kong
-    leftSideCam.setGlobalPosition(glm::vec3(0, 1500, 800));
-    leftSideCam.lookAt(glm::vec3(0, 0, 0));
-    leftSideCam.setFov(115);
-    rightSideCam.setGlobalPosition(glm::vec3(0, 1500, -800));
-    rightSideCam.lookAt(glm::vec3(0, 0, 0));
-    rightSideCam.setFov(115);
-    frontCam.setPosition(glm::vec3(1200, 1000, 200));
-    frontCam.lookAt(glm::vec3(0, 0, 0));
-    frontCam.setFov(90);
-    surfaceCam.setGlobalPosition(glm::vec3(0, 1500, 0));
+	leftSideCam.setPosition(glm::vec3(shipPos.x - 20, shipPos.y, shipPos.z));
+	leftSideCam.setFov(90);
+	leftSideCam.lookAt(glm::vec3(shipPos.x - 30, shipPos.y, shipPos.z));
+	rightSideCam.setPosition(glm::vec3(shipPos.x + 20, shipPos.y, shipPos.z));
+	rightSideCam.setFov(90);
+	rightSideCam.lookAt(glm::vec3(shipPos.x + 30, shipPos.y, shipPos.z));
+	frontCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z + 90));
+	frontCam.setFov(90);
+	frontCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
+	bottomCam.setPosition(glm::vec3(shipPos.x, shipPos.y - 30, shipPos.z));
+	bottomCam.setFov(90);
+	bottomCam.lookAt(glm::vec3(shipPos.x, shipPos.y - 40, shipPos.z));
     surfaceCam.lookAt(glm::vec3(0, 0, 0));
     surfaceCam.setFov(90);
-    bottomCam.setGlobalPosition(glm::vec3(0, -1500, 0));
-    bottomCam.lookAt(glm::vec3(0, 0, 0));
-    bottomCam.setFov(90);
+	surfaceCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
     trackingCam.setPosition(glm::vec3(500, 500, 500));
     trackingCam.setFov(90);
-    trackingCam.setOrientation(pSys.particles[0].position);
+    trackingCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
 
 	gui.setup();
 	gui.add(numLevels.setup("levels", 10, 1, 30));
@@ -174,12 +182,22 @@ void ofApp::update() {
 	if (!isPaused) {
 		// update cameras
 		// Code by Brandon Archbold
-		followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
-		trackingCam.setOrientation(pSys.particles[0].position);
-//        leftSideCam.setPosition(glm::vec3(pSys.particles[0].position.x - 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
-//        rightSideCam.setPosition(glm::vec3(pSys.particles[0].position.x + 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
-//        frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
-//        bottomCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z));
+
+		glm::vec3 shipPos = pSys.particles[0].position;
+		followCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z + 90));
+		leftSideCam.setPosition(glm::vec3(shipPos.x - 20, shipPos.y, shipPos.z));
+		leftSideCam.lookAt(glm::vec3(shipPos.x - 30, shipPos.y, shipPos.z));
+		rightSideCam.setPosition(glm::vec3(shipPos.x + 20, shipPos.y, shipPos.z));
+		rightSideCam.lookAt(glm::vec3(shipPos.x + 30, shipPos.y, shipPos.z));
+		frontCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z + 90));
+		frontCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
+		bottomCam.setPosition(glm::vec3(shipPos.x, shipPos.y - 30, shipPos.z));
+		bottomCam.lookAt(glm::vec3(shipPos.x, shipPos.y - 40, shipPos.z));
+		surfaceCam.lookAt(glm::vec3(0, 0, 0));
+		surfaceCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
+		trackingCam.setPosition(glm::vec3(500, 500, 500));
+		trackingCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
+
 		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
 		currLevel = (int)numLevels;
@@ -197,15 +215,26 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofBackground(ofColor::black);
-	/*gui.draw();
-	numLevels.draw();*/
-//	ofBackgroundGradient(ofColor(20), ofColor(0));   // pick your own backgroujnd
-	
-//	cout << ofGetFrameRate() << endl;
+	if (bBackgroundLoaded) {
+		ofPushMatrix();
+		ofDisableDepthTest();
+		ofSetColor(50, 50, 50);
+		ofScale(2, 2);
+		backgroundImage.draw(-200, -100);
+		ofEnableDepthTest();
+		ofPopMatrix();
+	}
 	ofSetColor(ofColor::white);
-	//sphere.draw();
 	loadVbo();
 	currCam->begin();
+	// draw cams for positioning
+	/*followCam.draw();
+	leftSideCam.draw();
+	rightSideCam.draw();
+	frontCam.draw();
+	bottomCam.draw();
+	surfaceCam.draw();
+	trackingCam.draw();*/
 	ofPushMatrix();
 	if (bWireframe) {                    // wireframe mode  (include axis)
 		ofDisableLighting();
@@ -336,8 +365,8 @@ void ofApp::keyPressed(int key) {
 	switch (key) {
 	case 'C':
 	case 'c':
-		if (cam.getMouseInputEnabled()) cam.disableMouseInput();
-		else cam.enableMouseInput();
+		if (easyCam.getMouseInputEnabled()) easyCam.disableMouseInput();
+		else easyCam.enableMouseInput();
 		break;
 	case 'F':
 	case 'f':
@@ -348,7 +377,7 @@ void ofApp::keyPressed(int key) {
 
 		break;
 	case 'r':
-		cam.reset();
+		easyCam.reset();
 		break;
 	case 's':
 		//savePicture();
@@ -370,7 +399,7 @@ void ofApp::keyPressed(int key) {
 		toggleWireframeMode();
 		break;
 	case OF_KEY_ALT:
-		cam.enableMouseInput();
+		easyCam.enableMouseInput();
 		bAltKeyDown = true;
 		break;
 	case OF_KEY_CONTROL:
@@ -394,7 +423,7 @@ void ofApp::keyPressed(int key) {
 		break;
 	case OF_KEY_F1: currCam = &followCam;
 		break;
-	case OF_KEY_F2: currCam = &cam;
+	case OF_KEY_F2: currCam = &easyCam;
 		break;
 		// Code by Brandon Archbold
         //Code by Abraham Kong
@@ -433,7 +462,7 @@ void ofApp::keyReleased(int key) {
 	switch (key) {
 	
 	case OF_KEY_ALT:
-		cam.disableMouseInput();
+		easyCam.disableMouseInput();
 		bAltKeyDown = false;
 		break;
 	case OF_KEY_CONTROL:
@@ -476,16 +505,9 @@ void ofApp::mousePressed(int x, int y, int button) {
 	rayDir.normalize();
 	Ray ray = Ray(Vector3(rayPoint.x, rayPoint.y, rayPoint.z), Vector3(rayDir.x, rayDir.y, rayDir.z));
 	TreeNode nodeRtn;
-	ofTime* time = new ofTime();
-	uint64_t end;
-	uint64_t start = time->getAsMilliseconds();
 	if (octree.intersect(ray, octree.root, nodeRtn)) {
-		ofVec3f pos = terrain.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
-		sphere.setGlobalPosition(pos);
-		cout << "Intersects at: " << pos << endl;
-		end = time->getAsMilliseconds();
-		uint64_t total = end - start;
-		cout << "Selection time: " << total << "ms\n";
+		Vector3 pos = nodeRtn.box.min();
+		easyCam.setPosition(glm::vec3(pos.x(), pos.y(), pos.z()));
 	}
 }
 // Code by Brandon Archbold
@@ -536,64 +558,6 @@ void ofApp::mouseDragged(int x, int y, int button) {
 void ofApp::mouseReleased(int x, int y, int button) {
 
 }
-
-
-////
-////  ScreenSpace Selection Method: 
-////  This is not the octree method, but will give you an idea of comparison
-////  of speed between octree and screenspace.
-////
-////  Select Target Point on Terrain by comparing distance of mouse to 
-////  vertice points projected onto screenspace.
-////  if a point is selected, return true, else return false;
-////
-//bool ofApp::doPointSelection() {
-//
-//	ofMesh mesh = terrain.getMesh(0);
-//	int n = mesh.getNumVertices();
-//	float nearestDistance = 0;
-//	int nearestIndex = 0;
-//
-//	bPointSelected = false;
-//
-//	ofVec2f mouse(mouseX, mouseY);
-//	vector<ofVec3f> selection;
-//
-//	// We check through the mesh vertices to see which ones
-//	// are "close" to the mouse point in screen space.  If we find 
-//	// points that are close, we store them in a vector (dynamic array)
-//	//
-//	for (int i = 0; i < n; i++) {
-//		ofVec3f vert = mesh.getVertex(i);
-//		ofVec3f posScreen = cam.worldToScreen(vert);
-//		float distance = posScreen.distance(mouse);
-//		if (distance < selectionRange) {
-//			selection.push_back(vert);
-//			bPointSelected = true;
-//		}
-//	}
-//
-//	//  if we found selected points, we need to determine which
-//	//  one is closest to the eye (camera). That one is our selected target.
-//	//
-//	if (bPointSelected) {
-//		float distance = 0;
-//		for (int i = 0; i < selection.size(); i++) {
-//			ofVec3f point =  cam.worldToCamera(selection[i]);
-//
-//			// In camera space, the camera is at (0,0,0), so distance from 
-//			// the camera is simply the length of the point vector
-//			//
-//			float curDist = point.length(); 
-//
-//			if (i == 0 || curDist < distance) {
-//				distance = curDist;
-//				selectedPoint = selection[i];
-//			}
-//		}
-//	}
-//	return bPointSelected;
-//}
 
 // Set the camera to use the selected point as it's new target
 //  
@@ -669,23 +633,9 @@ void ofApp::savePicture() {
 	cout << "picture saved" << endl;
 }
 
-//--------------------------------------------------------------
-//
-// support drag-and-drop of model (.obj) file loading.  when
-// model is dropped in viewport, place origin under cursor
-//
-void ofApp::dragEvent(ofDragInfo dragInfo) {
-/*
-	ofVec3f point;
-	mouseIntersectPlane(ofVec3f(0, 0, 0), cam.getZAxis(), point);
 
-	if (rover.loadModel(dragInfo.files[0])) {
-		rover.setScaleNormalization(false);
-		rover.setScale(.005, .005, .005);
-		rover.setPosition(point.x, point.y, point.z);
-		bRoverLoaded = true;
-	}
-	else cout << "Error: Can't load model" << dragInfo.files[0] << endl;*/
+void ofApp::dragEvent(ofDragInfo dragInfo) {
+
 }
 
 //bool ofApp::mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point) {
