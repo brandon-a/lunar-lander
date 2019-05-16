@@ -102,4 +102,6 @@ class ofApp : public ofBaseApp{
 
 		float altitude;
 		const float selectionRange = 4.0;
+    
+        string currentAction; //the current action
 };
