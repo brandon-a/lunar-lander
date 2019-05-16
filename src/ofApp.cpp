@@ -164,7 +164,7 @@ void ofApp::setup(){
 void ofApp::update() {
 	if (!isPaused) {
 		// update cameras
-		// Code by Brandon Archbold
+		// Code by Brandon Archbold, Abraham Kong
 
 		glm::vec3 shipPos = pSys.particles[0].position;
 		followCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z + 90));
@@ -397,7 +397,7 @@ void ofApp::keyPressed(int key) {
 	case OF_KEY_ALT:
 		easyCam.enableMouseInput();
 		bAltKeyDown = true;
-        currentAction = "Enable Mouse Input for Ease Cam";
+        currentAction = "Enable Mouse Input for Easy Cam";
 		break;
 	case OF_KEY_CONTROL:
 		bCtrlKeyDown = true;
@@ -580,13 +580,12 @@ void ofApp::mouseReleased(int x, int y, int button) {
 void ofApp::setCameraTarget() {
 	if (!bTargetShip && bPointSelected)
 		easyCam.setPosition(glm::vec3(selectedPoint.x, selectedPoint.y, selectedPoint.z));
-	else {
-//        currCam = &followCam;
-        
-        
-        easyCam.setPosition(glm::vec3(followCam.getPosition().x, followCam.getPosition().y, followCam.getPosition().z));
-		easyCam.setDistance(180);
-	}
+	else if (bTargetShip) {
+        easyCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z));
+    } else {
+        easyCam.reset();
+        easyCam.setDistance(180);
+    }
 }
 
 
