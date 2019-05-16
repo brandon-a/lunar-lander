@@ -498,11 +498,7 @@ void ofApp::altitudeDetection() {
         if (nodeRtn.points.size() != 0) {
 			Vector3 pos = nodeRtn.box.min();
 			float y = pos.y();
-			cout << shipPos.y - 30 << " " << y << endl;
-			/*if(y > 0)
-				altitude = shipPos.y - 30 + y;
-			else*/
-				altitude = shipPos.y - 30 - y;
+			altitude = shipPos.y - 30 - y;
         }
     }
 }
