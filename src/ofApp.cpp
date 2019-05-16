@@ -108,7 +108,7 @@ void ofApp::setup(){
 	rocket.setScaleNormalization(false);
 	rocket.setRotation(1, 180, 0, 0, 1);
 	ofDisableArbTex();
-
+	
 	// load particle image
 	if (!ofLoadImage(particleTexture, "images/dot.png")) {
 		cout << "Particle Texture File: images/dot.png not found" << endl;
@@ -136,6 +136,7 @@ void ofApp::setup(){
 
 	if (!thrustSound.load("sounds/347575__djt4nn3r__thrusters-loopamplified.wav"))			// sound from: https://freesound.org/people/DJT4NN3R/sounds/347575/
 		ofExit();
+	thrustSound.setLoop(true);
 	octree.create(terrain.getMesh("pPlane1"), (int) numLevels);
 	// Code by Brandon Archbold
 }
@@ -158,6 +159,7 @@ void ofApp::update() {
 		currLevel = (int)numLevels;
 		pSys.update();
 		altitudeDetection();
+		collisionDetection();
 		rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
         // Code by Brandon Archbold
         // Code by Abraham Kong
@@ -469,13 +471,26 @@ void ofApp::altitudeDetection() {
     TreeNode nodeRtn;
     if (octree.intersect(ray, octree.root, nodeRtn)) {
         if (nodeRtn.points.size() != 0) {
-			Vector3 pos = nodeRtn.box.center();
+			Vector3 pos = nodeRtn.box.min();
 			float y = std::abs(pos.y());
-			altitude = shipPos.y - 30; + y;
+			altitude = shipPos.y - 30 + y;
         }
     }
 }
 // Code by Brandon Archbold
+void ofApp::collisionDetection() {
+	ofPoint center = rocket.getMesh("pCylinder2").getCentroid();
+	contactPt = ofVec3f(center.x, center.y - (rocket.getSceneMax().y - rocket.getSceneMin().y) / 2, center.z + rocket.getPosition().y);
+	ofVec3f vel = pSys.particles[0].velocity;
+	if (vel.y > 0)
+		return;
+
+	TreeNode node;
+	if (octree.intersect(contactPt, octree.root, node)) {
+		bCollision = true;
+		cout << "collision" << endl;
+	}
+}
 
 
 //--------------------------------------------------------------

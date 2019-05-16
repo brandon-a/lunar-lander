@@ -165,22 +165,15 @@ bool Octree::intersect(const Ray &ray, const TreeNode & node, TreeNode & nodeRtn
 }
 
 
-bool Octree::intersect(const ofVec3f& point, const TreeNode& node, TreeNode& nodeRtn) {
-	const Vector3 l = Vector3(1, 2, 3);
-	node.box.inside(l);
-	//node.box.inside(mesh.getVertex(0));
-	//if (node.box.inside(p)) { // cout << "intersects" << endl;
-	//	for (int i = 0; i < node.children.size(); i++)
-	//		intersect(ray, node.children.at(i), nodeRtn);
-	//	if (node.children.size() == 0) {
-	//		for (int i = 0; i < node.points.size(); i++) {
-	//			node.box.inside(point);
-	//			if (node.box.inside(Vector3(point.x, point.y, point.z), 1)) {
-	//				nodeRtn = node;
-	//				return true;
-	//			}
-	//		}
-	//	}
-	//}
+bool Octree::intersect(const ofVec3f& point, TreeNode& node, TreeNode& nodeRtn) {
+	if (node.box.inside(Vector3(point.x, point.y, point.z))) { 
+		for (int i = 0; i < node.children.size(); i++)
+			intersect(point, node.children.at(i), nodeRtn);
+		if (node.children.size() == 0) {
+			nodeRtn = node;
+			return true;
+		}
+		return true;
+	}
 	return false;
 }
