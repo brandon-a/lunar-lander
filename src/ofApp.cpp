@@ -84,7 +84,8 @@ void ofApp::setup(){
     rightSideCam.setGlobalPosition(glm::vec3(0, 1500, -800));
     rightSideCam.lookAt(glm::vec3(0, 0, 0));
     rightSideCam.setFov(115);
-    frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
+    frontCam.setPosition(glm::vec3(1200, 1000, 200));
+    frontCam.lookAt(glm::vec3(0, 0, 0));
     frontCam.setFov(90);
     surfaceCam.setGlobalPosition(glm::vec3(0, 1500, 0));
     surfaceCam.lookAt(glm::vec3(0, 0, 0));
