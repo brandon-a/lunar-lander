@@ -165,7 +165,7 @@ bool Octree::intersect(const Ray &ray, const TreeNode & node, TreeNode & nodeRtn
 }
 
 
-bool Octree::intersect(const ofVec3f& point, const TreeNode& node, TreeNode& nodeRtn) const {
+bool Octree::intersect(const ofVec3f& point, const TreeNode& node, TreeNode& nodeRtn) {
 	const Vector3 l = Vector3(1, 2, 3);
 	node.box.inside(l);
 	//node.box.inside(mesh.getVertex(0));
