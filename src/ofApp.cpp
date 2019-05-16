@@ -53,6 +53,14 @@ void ofApp::setup(){
 
 	altitude = -1;
 	// Code by Brandon Archbold
+
+	if (!backgroundImage.load("images/sky-star-dark-constellation-color-space-blue-galaxy-nebula-outer-space-background-astronomy-stars-universe-photoshop-fantasy-pretty-astronomical-object-610854.jpg")) { // image from: https://pxhere.com/en/photo/610854
+		bBackgroundLoaded = false;
+		cout << "Backround image failed to load\n";
+	}
+	else
+		bBackgroundLoaded = true;
+
 	ship = new Particle();
 
 	// set up forces for ship
@@ -214,13 +222,16 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofBackground(ofColor::black);
-	/*gui.draw();
-	numLevels.draw();*/
-//	ofBackgroundGradient(ofColor(20), ofColor(0));   // pick your own backgroujnd
-	
-//	cout << ofGetFrameRate() << endl;
+	if (bBackgroundLoaded) {
+		ofPushMatrix();
+		ofDisableDepthTest();
+		ofSetColor(50, 50, 50);
+		ofScale(2, 2);
+		backgroundImage.draw(-200, -100);
+		ofEnableDepthTest();
+		ofPopMatrix();
+	}
 	ofSetColor(ofColor::white);
-	//sphere.draw();
 	loadVbo();
 	currCam->begin();
 	// draw cams for positioning

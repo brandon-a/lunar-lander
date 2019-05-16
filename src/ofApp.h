@@ -79,6 +79,7 @@ class ofApp : public ofBaseApp{
 		ofTexture particleTexture;
 		ofVbo vbo;
 		ofShader shader;
+		ofImage backgroundImage;
 
 		bool bAltKeyDown;
 		bool bCtrlKeyDown;
@@ -89,6 +90,7 @@ class ofApp : public ofBaseApp{
 		int	currLevel;
 		bool isPaused;
 		bool bCollision;
+		bool bBackgroundLoaded;
 
 		bool bRoverLoaded;
 		bool bTerrainSelected;
