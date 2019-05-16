@@ -11,6 +11,7 @@
 #include "ParticleSystem.h"
 #include "Particle.h"
 #include "ParticleEmitter.h"
+#include <cmath>
 
 class ofApp : public ofBaseApp{
 

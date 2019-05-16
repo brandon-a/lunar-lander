@@ -57,7 +57,7 @@ void ofApp::setup(){
 
 	// set up forces for ship
 	pSys.add(*ship);
-	pSys.particles[0].position = ofVec3f(0, 1000, 0);
+	pSys.particles[0].position = ofVec3f(0, 500, 0);
 	pSys.particles[0].velocity = ofVec3f(0, 0, 0);
 	pSys.particles[0].lifespan = -1;
 	pSys.particles[0].mass = 10;
@@ -149,6 +149,10 @@ void ofApp::update() {
 		// Code by Brandon Archbold
 		followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
 		trackingCam.setOrientation(pSys.particles[0].position);
+		leftSideCam.setPosition(glm::vec3(pSys.particles[0].position.x - 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
+		rightSideCam.setPosition(glm::vec3(pSys.particles[0].position.x + 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
+		frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
+		bottomCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z));
 		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
 		currLevel = (int)numLevels;
@@ -458,15 +462,16 @@ void ofApp::mousePressed(int x, int y, int button) {
 // Code by Brandon Archbold
 void ofApp::altitudeDetection() {
 	ofVec3f shipPos = pSys.particles[0].position;
-    ofVec3f rayPoint = ofVec3f(shipPos.x, shipPos.y - 30, shipPos.z);
+    ofVec3f rayPoint = ofVec3f(shipPos.x, shipPos.y -1, shipPos.z);
     ofVec3f rayDir = rayPoint - ofVec3f(shipPos.x, shipPos.y, shipPos.z);
     rayDir.normalize();
     Ray ray = Ray(Vector3(rayPoint.x, rayPoint.y, rayPoint.z), Vector3(rayDir.x, rayDir.y, rayDir.z));
     TreeNode nodeRtn;
     if (octree.intersect(ray, octree.root, nodeRtn)) {
         if (nodeRtn.points.size() != 0) {
-            ofVec3f pos = terrain.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
-            altitude = shipPos.y - 30 + abs(pos.y);
+			Vector3 pos = nodeRtn.box.center();
+			float y = std::abs(pos.y());
+			altitude = shipPos.y - 30; + y;
         }
     }
 }
