@@ -549,7 +549,7 @@ void ofApp::setCameraTarget() {
 	if (!bTargetShip && bPointSelected)
 		easyCam.setPosition(glm::vec3(selectedPoint.x, selectedPoint.y, selectedPoint.z));
 	else {
-		easyCam.setPosition(glm::vec3(pSys.particles[0].position));
+		easyCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z));
 		easyCam.setDistance(90);
 	}
 }
