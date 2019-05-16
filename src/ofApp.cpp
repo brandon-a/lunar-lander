@@ -57,7 +57,7 @@ void ofApp::setup(){
 
 	// set up forces for ship
 	pSys.add(*ship);
-	pSys.particles[0].position = ofVec3f(0, 1000, 0);
+	pSys.particles[0].position = ofVec3f(0, 500, 0);
 	pSys.particles[0].velocity = ofVec3f(0, 0, 0);
 	pSys.particles[0].lifespan = -1;
 	pSys.particles[0].mass = 10;
@@ -108,7 +108,7 @@ void ofApp::setup(){
 	rocket.setScaleNormalization(false);
 	rocket.setRotation(1, 180, 0, 0, 1);
 	ofDisableArbTex();
-
+	
 	// load particle image
 	if (!ofLoadImage(particleTexture, "images/dot.png")) {
 		cout << "Particle Texture File: images/dot.png not found" << endl;
@@ -136,6 +136,7 @@ void ofApp::setup(){
 
 	if (!thrustSound.load("sounds/347575__djt4nn3r__thrusters-loopamplified.wav"))			// sound from: https://freesound.org/people/DJT4NN3R/sounds/347575/
 		ofExit();
+	thrustSound.setLoop(true);
 	octree.create(terrain.getMesh("pPlane1"), (int) numLevels);
 	// Code by Brandon Archbold
 }
@@ -149,11 +150,16 @@ void ofApp::update() {
 		// Code by Brandon Archbold
 		followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
 		trackingCam.setOrientation(pSys.particles[0].position);
+		leftSideCam.setPosition(glm::vec3(pSys.particles[0].position.x - 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
+		rightSideCam.setPosition(glm::vec3(pSys.particles[0].position.x + 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
+		frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
+		bottomCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z));
 		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
 		currLevel = (int)numLevels;
 		pSys.update();
 		altitudeDetection();
+		collisionDetection();
 		rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
         // Code by Brandon Archbold
         // Code by Abraham Kong
@@ -458,19 +464,37 @@ void ofApp::mousePressed(int x, int y, int button) {
 // Code by Brandon Archbold
 void ofApp::altitudeDetection() {
 	ofVec3f shipPos = pSys.particles[0].position;
-    ofVec3f rayPoint = ofVec3f(shipPos.x, shipPos.y - 30, shipPos.z);
+    ofVec3f rayPoint = ofVec3f(shipPos.x, shipPos.y -1, shipPos.z);
     ofVec3f rayDir = rayPoint - ofVec3f(shipPos.x, shipPos.y, shipPos.z);
     rayDir.normalize();
     Ray ray = Ray(Vector3(rayPoint.x, rayPoint.y, rayPoint.z), Vector3(rayDir.x, rayDir.y, rayDir.z));
     TreeNode nodeRtn;
     if (octree.intersect(ray, octree.root, nodeRtn)) {
         if (nodeRtn.points.size() != 0) {
-            ofVec3f pos = terrain.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
-            altitude = shipPos.y - 30 + abs(pos.y);
+			Vector3 pos = nodeRtn.box.min();
+			float y = pos.y();
+			cout << shipPos.y - 30 << " " << y << endl;
+			/*if(y > 0)
+				altitude = shipPos.y - 30 + y;
+			else*/
+				altitude = shipPos.y - 30 - y;
         }
     }
 }
 // Code by Brandon Archbold
+void ofApp::collisionDetection() {
+	ofPoint center = rocket.getMesh("pCylinder2").getCentroid();
+	contactPt = ofVec3f(center.x, center.y - (rocket.getSceneMax().y - rocket.getSceneMin().y) / 2, center.z + rocket.getPosition().y);
+	ofVec3f vel = pSys.particles[0].velocity;
+	if (vel.y > 0)
+		return;
+
+	TreeNode node;
+	if (octree.intersect(contactPt, octree.root, node)) {
+		bCollision = true;
+		//cout << "collision" << endl;
+	}
+}
 
 
 //--------------------------------------------------------------

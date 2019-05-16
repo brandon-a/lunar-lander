@@ -11,6 +11,7 @@
 #include "ParticleSystem.h"
 #include "Particle.h"
 #include "ParticleEmitter.h"
+#include <cmath>
 
 class ofApp : public ofBaseApp{
 
@@ -43,6 +44,7 @@ class ofApp : public ofBaseApp{
 		void subDivideBox8(const Box &b, vector<Box> & boxList);
 		void loadVbo();
 		void altitudeDetection();
+		void collisionDetection();
 
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
@@ -84,12 +86,14 @@ class ofApp : public ofBaseApp{
 		bool leaf;
 		int	currLevel;
 		bool isPaused;
+		bool bCollision;
 
 		bool bRoverLoaded;
 		bool bTerrainSelected;
 	
 		ofVec3f selectedPoint;
 		ofVec3f intersectPoint;
+		ofVec3f contactPt;
 
 		float altitude;
 		const float selectionRange = 4.0;
