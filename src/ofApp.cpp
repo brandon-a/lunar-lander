@@ -73,29 +73,29 @@ void ofApp::setup(){
 	pSys.addForce(&impulseForce);
 	// Code by Brandon Archbold
     // set up the cameras
+	glm::vec3 shipPos = pSys.particles[0].position;
     currCam = &followCam;
-    followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
+    followCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z + 90));
     followCam.setFov(90);
     followCam.setNearClip(.1);
-    //Code by Abraham Kong
-    leftSideCam.setGlobalPosition(glm::vec3(0, 1500, 800));
-    leftSideCam.lookAt(glm::vec3(0, 0, 0));
-    leftSideCam.setFov(115);
-    rightSideCam.setGlobalPosition(glm::vec3(0, 1500, -800));
-    rightSideCam.lookAt(glm::vec3(0, 0, 0));
-    rightSideCam.setFov(115);
-    frontCam.setPosition(glm::vec3(1200, 1000, 200));
-    frontCam.lookAt(glm::vec3(0, 0, 0));
-    frontCam.setFov(90);
-    surfaceCam.setGlobalPosition(glm::vec3(0, 1500, 0));
+	leftSideCam.setPosition(glm::vec3(shipPos.x - 20, shipPos.y, shipPos.z));
+	leftSideCam.setFov(90);
+	leftSideCam.lookAt(glm::vec3(shipPos.x - 30, shipPos.y, shipPos.z));
+	rightSideCam.setPosition(glm::vec3(shipPos.x + 20, shipPos.y, shipPos.z));
+	rightSideCam.setFov(90);
+	rightSideCam.lookAt(glm::vec3(shipPos.x + 30, shipPos.y, shipPos.z));
+	frontCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z + 90));
+	frontCam.setFov(90);
+	frontCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
+	bottomCam.setPosition(glm::vec3(shipPos.x, shipPos.y - 30, shipPos.z));
+	bottomCam.setFov(90);
+	bottomCam.lookAt(glm::vec3(shipPos.x, shipPos.y - 40, shipPos.z));
     surfaceCam.lookAt(glm::vec3(0, 0, 0));
     surfaceCam.setFov(90);
-    bottomCam.setGlobalPosition(glm::vec3(0, -1500, 0));
-    bottomCam.lookAt(glm::vec3(0, 0, 0));
-    bottomCam.setFov(90);
+	surfaceCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
     trackingCam.setPosition(glm::vec3(500, 500, 500));
     trackingCam.setFov(90);
-    trackingCam.setOrientation(pSys.particles[0].position);
+    trackingCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
 
 	gui.setup();
 	gui.add(numLevels.setup("levels", 10, 1, 30));
@@ -181,12 +181,22 @@ void ofApp::update() {
 	if (!isPaused) {
 		// update cameras
 		// Code by Brandon Archbold
-		followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
-		trackingCam.setOrientation(pSys.particles[0].position);
-//        leftSideCam.setPosition(glm::vec3(pSys.particles[0].position.x - 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
-//        rightSideCam.setPosition(glm::vec3(pSys.particles[0].position.x + 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
-//        frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
-//        bottomCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z));
+
+		glm::vec3 shipPos = pSys.particles[0].position;
+		followCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z + 90));
+		leftSideCam.setPosition(glm::vec3(shipPos.x - 20, shipPos.y, shipPos.z));
+		leftSideCam.lookAt(glm::vec3(shipPos.x - 30, shipPos.y, shipPos.z));
+		rightSideCam.setPosition(glm::vec3(shipPos.x + 20, shipPos.y, shipPos.z));
+		rightSideCam.lookAt(glm::vec3(shipPos.x + 30, shipPos.y, shipPos.z));
+		frontCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z + 90));
+		frontCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
+		bottomCam.setPosition(glm::vec3(shipPos.x, shipPos.y - 30, shipPos.z));
+		bottomCam.lookAt(glm::vec3(shipPos.x, shipPos.y - 40, shipPos.z));
+		surfaceCam.lookAt(glm::vec3(0, 0, 0));
+		surfaceCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
+		trackingCam.setPosition(glm::vec3(500, 500, 500));
+		trackingCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
+
 		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
 		currLevel = (int)numLevels;
@@ -213,6 +223,13 @@ void ofApp::draw(){
 	//sphere.draw();
 	loadVbo();
 	currCam->begin();
+	followCam.draw();
+	leftSideCam.draw();
+	rightSideCam.draw();
+	frontCam.draw();
+	bottomCam.draw();
+	surfaceCam.draw();
+	trackingCam.draw();
 	ofPushMatrix();
 	if (bWireframe) {                    // wireframe mode  (include axis)
 		ofDisableLighting();
