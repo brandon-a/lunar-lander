@@ -153,6 +153,7 @@ void Octree::subdivide(const ofMesh & mesh, TreeNode & node, int numLevels, int 
 }
 
 bool Octree::intersect(const Ray &ray, const TreeNode & node, TreeNode & nodeRtn) {
+//    node.box.inside
 	if (node.box.intersect(ray, -1000, 1000)) { // cout << "intersects" << endl;
 		for (int i = 0; i < node.children.size(); i++)
 			intersect(ray, node.children.at(i), nodeRtn);
