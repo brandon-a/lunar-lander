@@ -102,6 +102,9 @@ void ofApp::setup(){
 //    rocketBottomLight.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y , pSys.particles[0].position.z );
 //    rocketBottomLight.setDirectional();
 //    rocketBottomLight.setAreaLight(100, 100);
+    
+    // initializing the wording for current action
+    currentAction = "\n\nPlease press the following button to do action:\narrow keys to move left, right, forward, and back\nSpace bar for move up\nShift for move down\n\"w\" for wireframe mode\n\"v\" for vector mode\n\"f\" for Full Screen";
     // Code by Abraham Kong
     
     // setup rudimentary lighting
