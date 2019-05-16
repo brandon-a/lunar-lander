@@ -472,8 +472,12 @@ void ofApp::altitudeDetection() {
     if (octree.intersect(ray, octree.root, nodeRtn)) {
         if (nodeRtn.points.size() != 0) {
 			Vector3 pos = nodeRtn.box.min();
-			float y = std::abs(pos.y());
-			altitude = shipPos.y - 30 + y;
+			float y = pos.y();
+			cout << shipPos.y - 30 << " " << y << endl;
+			/*if(y > 0)
+				altitude = shipPos.y - 30 + y;
+			else*/
+				altitude = shipPos.y - 30 - y;
         }
     }
 }
@@ -488,7 +492,7 @@ void ofApp::collisionDetection() {
 	TreeNode node;
 	if (octree.intersect(contactPt, octree.root, node)) {
 		bCollision = true;
-		cout << "collision" << endl;
+		//cout << "collision" << endl;
 	}
 }
 
