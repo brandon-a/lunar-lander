@@ -42,11 +42,11 @@ void ofApp::setup(){
 	leaf = true;
 	isPaused = false;
 //	ofSetWindowShape(1024, 768);
-	cam.setDistance(10);
-	cam.setNearClip(.1);
-	cam.setFov(65.5);   // approx equivalent to 28mm in 35mm format
+	easyCam.setDistance(10);
+	easyCam.setNearClip(.1);
+	easyCam.setFov(65.5);   // approx equivalent to 28mm in 35mm format
 	ofSetVerticalSync(true);
-	cam.disableMouseInput();
+	easyCam.disableMouseInput();
 	ofEnableSmoothing();
 	ofEnableDepthTest();
 	sphere.setRadius(50);
@@ -223,13 +223,14 @@ void ofApp::draw(){
 	//sphere.draw();
 	loadVbo();
 	currCam->begin();
-	followCam.draw();
+	// draw cams for positioning
+	/*followCam.draw();
 	leftSideCam.draw();
 	rightSideCam.draw();
 	frontCam.draw();
 	bottomCam.draw();
 	surfaceCam.draw();
-	trackingCam.draw();
+	trackingCam.draw();*/
 	ofPushMatrix();
 	if (bWireframe) {                    // wireframe mode  (include axis)
 		ofDisableLighting();
@@ -360,8 +361,8 @@ void ofApp::keyPressed(int key) {
 	switch (key) {
 	case 'C':
 	case 'c':
-		if (cam.getMouseInputEnabled()) cam.disableMouseInput();
-		else cam.enableMouseInput();
+		if (easyCam.getMouseInputEnabled()) easyCam.disableMouseInput();
+		else easyCam.enableMouseInput();
 		break;
 	case 'F':
 	case 'f':
@@ -372,7 +373,7 @@ void ofApp::keyPressed(int key) {
 
 		break;
 	case 'r':
-		cam.reset();
+		easyCam.reset();
 		break;
 	case 's':
 		//savePicture();
@@ -394,7 +395,7 @@ void ofApp::keyPressed(int key) {
 		toggleWireframeMode();
 		break;
 	case OF_KEY_ALT:
-		cam.enableMouseInput();
+		easyCam.enableMouseInput();
 		bAltKeyDown = true;
 		break;
 	case OF_KEY_CONTROL:
@@ -418,7 +419,7 @@ void ofApp::keyPressed(int key) {
 		break;
 	case OF_KEY_F1: currCam = &followCam;
 		break;
-	case OF_KEY_F2: currCam = &cam;
+	case OF_KEY_F2: currCam = &easyCam;
 		break;
 		// Code by Brandon Archbold
         //Code by Abraham Kong
@@ -457,7 +458,7 @@ void ofApp::keyReleased(int key) {
 	switch (key) {
 	
 	case OF_KEY_ALT:
-		cam.disableMouseInput();
+		easyCam.disableMouseInput();
 		bAltKeyDown = false;
 		break;
 	case OF_KEY_CONTROL:
@@ -500,16 +501,9 @@ void ofApp::mousePressed(int x, int y, int button) {
 	rayDir.normalize();
 	Ray ray = Ray(Vector3(rayPoint.x, rayPoint.y, rayPoint.z), Vector3(rayDir.x, rayDir.y, rayDir.z));
 	TreeNode nodeRtn;
-	ofTime* time = new ofTime();
-	uint64_t end;
-	uint64_t start = time->getAsMilliseconds();
 	if (octree.intersect(ray, octree.root, nodeRtn)) {
-		ofVec3f pos = terrain.getMesh("pPlane1").getVertex(nodeRtn.points.at(0));
-		sphere.setGlobalPosition(pos);
-		cout << "Intersects at: " << pos << endl;
-		end = time->getAsMilliseconds();
-		uint64_t total = end - start;
-		cout << "Selection time: " << total << "ms\n";
+		Vector3 pos = nodeRtn.box.min();
+		easyCam.setPosition(glm::vec3(pos.x(), pos.y(), pos.z()));
 	}
 }
 // Code by Brandon Archbold
@@ -560,64 +554,6 @@ void ofApp::mouseDragged(int x, int y, int button) {
 void ofApp::mouseReleased(int x, int y, int button) {
 
 }
-
-
-////
-////  ScreenSpace Selection Method: 
-////  This is not the octree method, but will give you an idea of comparison
-////  of speed between octree and screenspace.
-////
-////  Select Target Point on Terrain by comparing distance of mouse to 
-////  vertice points projected onto screenspace.
-////  if a point is selected, return true, else return false;
-////
-//bool ofApp::doPointSelection() {
-//
-//	ofMesh mesh = terrain.getMesh(0);
-//	int n = mesh.getNumVertices();
-//	float nearestDistance = 0;
-//	int nearestIndex = 0;
-//
-//	bPointSelected = false;
-//
-//	ofVec2f mouse(mouseX, mouseY);
-//	vector<ofVec3f> selection;
-//
-//	// We check through the mesh vertices to see which ones
-//	// are "close" to the mouse point in screen space.  If we find 
-//	// points that are close, we store them in a vector (dynamic array)
-//	//
-//	for (int i = 0; i < n; i++) {
-//		ofVec3f vert = mesh.getVertex(i);
-//		ofVec3f posScreen = cam.worldToScreen(vert);
-//		float distance = posScreen.distance(mouse);
-//		if (distance < selectionRange) {
-//			selection.push_back(vert);
-//			bPointSelected = true;
-//		}
-//	}
-//
-//	//  if we found selected points, we need to determine which
-//	//  one is closest to the eye (camera). That one is our selected target.
-//	//
-//	if (bPointSelected) {
-//		float distance = 0;
-//		for (int i = 0; i < selection.size(); i++) {
-//			ofVec3f point =  cam.worldToCamera(selection[i]);
-//
-//			// In camera space, the camera is at (0,0,0), so distance from 
-//			// the camera is simply the length of the point vector
-//			//
-//			float curDist = point.length(); 
-//
-//			if (i == 0 || curDist < distance) {
-//				distance = curDist;
-//				selectedPoint = selection[i];
-//			}
-//		}
-//	}
-//	return bPointSelected;
-//}
 
 // Set the camera to use the selected point as it's new target
 //  
@@ -693,23 +629,9 @@ void ofApp::savePicture() {
 	cout << "picture saved" << endl;
 }
 
-//--------------------------------------------------------------
-//
-// support drag-and-drop of model (.obj) file loading.  when
-// model is dropped in viewport, place origin under cursor
-//
-void ofApp::dragEvent(ofDragInfo dragInfo) {
-/*
-	ofVec3f point;
-	mouseIntersectPlane(ofVec3f(0, 0, 0), cam.getZAxis(), point);
 
-	if (rover.loadModel(dragInfo.files[0])) {
-		rover.setScaleNormalization(false);
-		rover.setScale(.005, .005, .005);
-		rover.setPosition(point.x, point.y, point.z);
-		bRoverLoaded = true;
-	}
-	else cout << "Error: Can't load model" << dragInfo.files[0] << endl;*/
+void ofApp::dragEvent(ofDragInfo dragInfo) {
+
 }
 
 //bool ofApp::mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point) {

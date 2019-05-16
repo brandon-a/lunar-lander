@@ -48,7 +48,7 @@ class ofApp : public ofBaseApp{
 
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
-		ofEasyCam cam;
+		ofEasyCam easyCam;
 		ofCamera followCam;
 		ofCamera leftSideCam;
 		ofCamera rightSideCam;
