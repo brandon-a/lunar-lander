@@ -72,22 +72,29 @@ void ofApp::setup(){
 	pSys.addForce(thrustForce);
 	pSys.addForce(&impulseForce);
 	// Code by Brandon Archbold
-	// set up the cameras
-	currCam = &followCam;
-	followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
-	followCam.setFov(90);
-	followCam.setNearClip(.1);
-	leftSideCam.setPosition(glm::vec3(-1580, 0,1000));
-	leftSideCam.setFov(115);
-	rightSideCam.setPosition(glm::vec3(pSys.particles[0].position.x + 100, pSys.particles[0].position.y + 20, pSys.particles[0].position.z));
-	rightSideCam.setFov(90);
-	frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
-	frontCam.setFov(90);
-	bottomCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z));
-	bottomCam.setFov(90);
-	trackingCam.setPosition(glm::vec3(500, 500, 500));
-	trackingCam.setFov(90);
-	trackingCam.setOrientation(pSys.particles[0].position);
+    // set up the cameras
+    currCam = &followCam;
+    followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
+    followCam.setFov(90);
+    followCam.setNearClip(.1);
+    //Code by Abraham Kong
+    leftSideCam.setGlobalPosition(glm::vec3(0, 1500, 800));
+    leftSideCam.lookAt(glm::vec3(0, 0, 0));
+    leftSideCam.setFov(115);
+    rightSideCam.setGlobalPosition(glm::vec3(0, 1500, -800));
+    rightSideCam.lookAt(glm::vec3(0, 0, 0));
+    rightSideCam.setFov(115);
+    frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
+    frontCam.setFov(90);
+    surfaceCam.setGlobalPosition(glm::vec3(0, 1500, 0));
+    surfaceCam.lookAt(glm::vec3(0, 0, 0));
+    surfaceCam.setFov(90);
+    bottomCam.setGlobalPosition(glm::vec3(0, -1500, 0));
+    bottomCam.lookAt(glm::vec3(0, 0, 0));
+    bottomCam.setFov(90);
+    trackingCam.setPosition(glm::vec3(500, 500, 500));
+    trackingCam.setFov(90);
+    trackingCam.setOrientation(pSys.particles[0].position);
 
 	gui.setup();
 	gui.add(numLevels.setup("levels", 10, 1, 30));
@@ -175,10 +182,10 @@ void ofApp::update() {
 		// Code by Brandon Archbold
 		followCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 90));
 		trackingCam.setOrientation(pSys.particles[0].position);
-		leftSideCam.setPosition(glm::vec3(pSys.particles[0].position.x - 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
-		rightSideCam.setPosition(glm::vec3(pSys.particles[0].position.x + 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
-		frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
-		bottomCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z));
+//        leftSideCam.setPosition(glm::vec3(pSys.particles[0].position.x - 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
+//        rightSideCam.setPosition(glm::vec3(pSys.particles[0].position.x + 20, pSys.particles[0].position.y, pSys.particles[0].position.z));
+//        frontCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z + 20));
+//        bottomCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z));
 		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
 		currLevel = (int)numLevels;
