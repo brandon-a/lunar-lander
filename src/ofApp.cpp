@@ -49,7 +49,7 @@ void ofApp::setup(){
 	easyCam.disableMouseInput();
 	ofEnableSmoothing();
 	ofEnableDepthTest();
-	sphere.setRadius(50);
+	sphere.setRadius(10);
 
 	altitude = -1;
 	// Code by Brandon Archbold
@@ -197,6 +197,11 @@ void ofApp::update() {
 		surfaceCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
 		trackingCam.setPosition(glm::vec3(500, 500, 500));
 		trackingCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
+		if (bPointSelected) {
+			easyCam.setPosition(glm::vec3(selectedPoint.x, selectedPoint.y, selectedPoint.z));
+		}
+		else
+			easyCam.setPosition(pSys.particles[0].position);
 
 		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
@@ -276,8 +281,9 @@ void ofApp::draw(){
 	//
 	if (bPointSelected) {
 		ofSetColor(ofColor::blue);
-		ofDrawSphere(selectedPoint, .1);
+		ofDrawSphere(selectedPoint, 1.0);
 	}
+	
 	// Code by Brandon Archbold adapted from shader example in class
 	ofNoFill();
 	ofSetColor(ofColor::white);
@@ -507,8 +513,12 @@ void ofApp::mousePressed(int x, int y, int button) {
 	TreeNode nodeRtn;
 	if (octree.intersect(ray, octree.root, nodeRtn)) {
 		Vector3 pos = nodeRtn.box.min();
-		easyCam.setPosition(glm::vec3(pos.x(), pos.y(), pos.z()));
+		selectedPoint = ofVec3f(pos.x(), pos.y(), pos.z());
+		bPointSelected = true;
+		cout << selectedPoint << " selected\n";
 	}
+	else
+		bPointSelected = false;
 }
 // Code by Brandon Archbold
 void ofApp::altitudeDetection() {
@@ -562,7 +572,12 @@ void ofApp::mouseReleased(int x, int y, int button) {
 // Set the camera to use the selected point as it's new target
 //  
 void ofApp::setCameraTarget() {
-
+	if (bPointSelected)
+		easyCam.setPosition(glm::vec3(selectedPoint.x, selectedPoint.y, selectedPoint.z));
+	else {
+		easyCam.setPosition(pSys.particles[0].position);
+		easyCam.setDistance(90);
+	}
 }
 
 
