@@ -105,15 +105,6 @@ void ofApp::setup(){
 //    rocketBottomLight.setup();
 //    rocketBottomLight.enable();
 //    rocketBottomLight.setSpotlight();
-//    rocketBottomLight.setscale
-//    rocketBottomLight.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y , pSys.particles[0].position.z);
-//    rocketBottomLight.setDirectional();
-//    rocketBottomLight.setAreaLight(100, 100);
-    
-    
-//    rocketBottomLight.setup();
-//    rocketBottomLight.enable();
-//    rocketBottomLight.setSpotlight();
 //    rocketBottomLight.setScale(.05);
 //    rocketBottomLight.setSpotlightCutOff(30);
 //    rocketBottomLight.setAttenuation(.2, .001, .001);
@@ -122,9 +113,11 @@ void ofApp::setup(){
 //    rocketBottomLight.setSpecularColor(ofFloatColor(1, 1, 1));
 //    rocketBottomLight.rotate(180, ofVec3f(0, 1, 0));
 //    rocketBottomLight.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y , pSys.particles[0].position.z );
+//    rocketBottomLight.setDirectional();
+//    rocketBottomLight.setAreaLight(100, 100);
     // Code by Abraham Kong
     
-	// setup rudimentary lighting 
+    // setup rudimentary lighting
 	//
 	initLightingAndMaterials();
 
