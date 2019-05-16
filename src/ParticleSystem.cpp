@@ -113,11 +113,12 @@ void TurbulenceForce::updateForce(Particle * particle) {
 	particle->forces.z += ofRandom(tmin.z, tmax.z);
 }
 
+// code by Brandon Archbold
 ThrustForce::ThrustForce(ofVec3f& dir, float mag){
 	direction = dir;
 	magnitude = mag;
 }
-
+// code by Brandon Archbold
 void ThrustForce::updateForce(Particle* particle){
 	particle->forces += ofVec3f(direction * magnitude * particle->mass);
 }

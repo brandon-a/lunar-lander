@@ -60,7 +60,7 @@ void ofApp::setup(){
 	pSys.particles[0].position = ofVec3f(0, 500, 0);
 	pSys.particles[0].velocity = ofVec3f(0, 0, 0);
 	pSys.particles[0].lifespan = -1;
-	pSys.particles[0].mass = 10;
+	pSys.particles[0].mass = 1;
 
     ofVec3f temp = ofVec3f(0, 0, 0);
 	turbForce = new TurbulenceForce(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
@@ -70,6 +70,7 @@ void ofApp::setup(){
 	pSys.addForce(turbForce);
 	pSys.addForce(gravityForce);
 	pSys.addForce(thrustForce);
+	pSys.addForce(&impulseForce);
 	// Code by Brandon Archbold
 	// set up the cameras
 	currCam = &followCam;
@@ -504,8 +505,9 @@ void ofApp::altitudeDetection() {
 }
 // Code by Brandon Archbold
 void ofApp::collisionDetection() {
-	ofPoint center = rocket.getMesh("pCylinder2").getCentroid();
-	contactPt = ofVec3f(center.x, center.y - (rocket.getSceneMax().y - rocket.getSceneMin().y) / 2, center.z + rocket.getPosition().y);
+	//ofPoint center = rocket.getMesh("pCylinder2").getCentroid();
+	//contactPt = ofVec3f(center.x, center.y - (rocket.getSceneMax().y - rocket.getSceneMin().y) / 2, center.z + rocket.getPosition().y);
+	contactPt = pSys.particles[0].position - 30;
 	ofVec3f vel = pSys.particles[0].velocity;
 	if (vel.y > 0)
 		return;
@@ -513,7 +515,12 @@ void ofApp::collisionDetection() {
 	TreeNode node;
 	if (octree.intersect(contactPt, octree.root, node)) {
 		bCollision = true;
-		//cout << "collision" << endl;
+		cout << "collision " << contactPt << endl;
+
+		// impulse force
+		ofVec3f norm = ofVec3f(0, 1, 0);
+		ofVec3f f = (1 + 1.0) * ((-vel.dot(norm)) * norm);
+		impulseForce.apply(ofGetFrameRate() * f);
 	}
 }
 

@@ -58,6 +58,7 @@ public:
 	void setHeight(float height);
 };
 
+// code by Brandon Archbold
 class ThrustForce : public ParticleForce {
 	float magnitude;
 	ofVec3f direction;
@@ -68,4 +69,21 @@ public:
 	void setDirection(ofVec3f dir) { direction = dir; }
 	float getMagnitude() { return magnitude; }
 	ofVec3f getDirection() { return direction; }
+};
+
+class ImpulseForce : public ParticleForce {
+public:
+	ImpulseForce() {
+		applyOnce = true;
+		applied = true;
+		force = ofVec3f(0, 0, 0);
+	}
+	void apply(const ofVec3f f) {
+		applied = false;
+		force = f;
+	}
+	void updateForce(Particle* particle) {
+		particle->forces += force;
+	}
+	ofVec3f force;
 };

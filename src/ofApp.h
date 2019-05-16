@@ -74,6 +74,7 @@ class ofApp : public ofBaseApp{
 		TurbulenceForce* turbForce;
 		GravityForce* gravityForce;
 		ThrustForce* thrustForce;
+		ImpulseForce impulseForce;
 
 		ofTexture particleTexture;
 		ofVbo vbo;

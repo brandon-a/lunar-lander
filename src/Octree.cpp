@@ -6,7 +6,7 @@
  
 
 // draw Octree (recursively)
-//
+// Code by Brandon Archbold
 void Octree::draw(TreeNode & node, int numLevels, int level) {
 	if (level >= numLevels) return;
 	drawBox(node.box);
@@ -17,7 +17,7 @@ void Octree::draw(TreeNode & node, int numLevels, int level) {
 }
 
 // draw only leaf Nodes
-//
+// Code by Brandon Archbold
 void Octree::drawLeafNodes(TreeNode & node) {
     for(int i = 0; i < node.children.size(); i++)
         drawLeafNodes(node.children[i]);
@@ -114,6 +114,7 @@ void Octree::subDivideBox8(const Box &box, vector<Box> & boxList) {
 	}
 }
 
+// Code by Brandon Archbold
 void Octree::create(const ofMesh & geo, int numLevels) {
 	// initialize octree structure
     root.box = meshBounds(geo);
@@ -123,7 +124,7 @@ void Octree::create(const ofMesh & geo, int numLevels) {
     subdivide(geo, root, numLevels, 0);
 
 }
-
+// Code by Brandon Archbold
 void Octree::subdivide(const ofMesh & mesh, TreeNode & node, int numLevels, int level) {
 	if (level >= numLevels)
 		return;
@@ -152,6 +153,7 @@ void Octree::subdivide(const ofMesh & mesh, TreeNode & node, int numLevels, int 
 	}
 }
 
+// Code by Brandon Archbold
 bool Octree::intersect(const Ray &ray, const TreeNode & node, TreeNode & nodeRtn) {
 	if (node.box.intersect(ray, -3000, 3000)) { // cout << "intersects" << endl;
 		for (int i = 0; i < node.children.size(); i++)
@@ -164,16 +166,16 @@ bool Octree::intersect(const Ray &ray, const TreeNode & node, TreeNode & nodeRtn
 	return false;
 }
 
-
+// Code by Brandon Archbold
 bool Octree::intersect(const ofVec3f& point, TreeNode& node, TreeNode& nodeRtn) {
-	if (node.box.inside(Vector3(point.x, point.y, point.z))) { 
-		for (int i = 0; i < node.children.size(); i++)
-			intersect(point, node.children.at(i), nodeRtn);
-		if (node.children.size() == 0) {
-			nodeRtn = node;
-			return true;
+	for (int i = 0; i < node.children.size(); i++) {
+		if (node.children[i].box.inside(Vector3(point.x, point.y, point.z))) {
+			if (node.children[i].children.size() == 0) {
+				nodeRtn = node;
+				return true;
+			} else
+				return intersect(point, node.children.at(i), nodeRtn);
 		}
-		return true;
 	}
 	return false;
 }
