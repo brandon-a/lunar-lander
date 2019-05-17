@@ -20,6 +20,7 @@ void ofApp::setup(){
 	leaf = true;
 	isPaused = false;
 	bTargetShip = true;
+	hideControls = false;
 //	ofSetWindowShape(1024, 768);
 	easyCam.setDistance(10);
 	easyCam.setNearClip(.1);
@@ -110,9 +111,9 @@ void ofApp::setup(){
 //    rocketBottomLight.setAreaLight(100, 100);
     
     // initializing the wording for current action
-    currentAction = "\n\nPlease press the following button to do action:\narrow keys to move left, right, forward, and back\nSpace bar for move up\nShift for move down\n\"w\" for wireframe mode\n\"v\" for vector mode\n\"f\" for Full Screen";
+    currentAction = "Welcome to Rocket Lander!";
     // Code by Abraham Kong
-    
+    controlsString = "\n\nControls:\narrow keys - movement\nspace - up\nshift - down\nc - lock/unlock easyCam\nf - fullscreen\ns - toggleEZcam target\nt - EZcam to ship\nmouse1 - select point\np - pause\nF1 - main cam\nF2 - easyCam\nF3 - leftCam\nF4 - rightCam\nF5 - frontCam\nF6 - bottomCam\nF7 - surfaceCam\nF8 - trackingCam\nh - hide this panel";
     // setup rudimentary lighting
 	//
 	initLightingAndMaterials();
@@ -328,7 +329,8 @@ void ofApp::draw(){
 	ofDrawBitmapString(str2, 0, 15);
     string str3 = "Current Action: " + currentAction;
     ofDrawBitmapString(str3, 0, 30);
-    
+	if(!hideControls)
+		ofDrawBitmapString(controlsString, 0, 45);
 }
 
 // 
@@ -367,16 +369,17 @@ void ofApp::keyPressed(int key) {
 	case 'c':
 		if (easyCam.getMouseInputEnabled()) easyCam.disableMouseInput();
 		else easyCam.enableMouseInput();
-        currentAction = "Enable/Disable Mouse Input";
+        currentAction = "Enabled/Disabled Mouse Input";
 		break;
 	case 'F':
 	case 'f':
         ofToggleFullscreen();
-        currentAction = "Enable/Disable Full Screen";
+        currentAction = "Enabled/Disabled Full Screen";
         break;
 	case 'H':
 	case 'h':
-
+		hideControls = !hideControls;
+		currentAction = "hide/unhide controls";
 		break;
 	case 'r':
 		easyCam.reset();
@@ -400,7 +403,7 @@ void ofApp::keyPressed(int key) {
         currentAction = "Vector Mode";
 		break;
 	case 'p': isPaused = !isPaused;
-        currentAction = "Paused/Unpaused the screen";
+        currentAction = "Pause/Unpause";
 		break;
 	case 'w':
 		toggleWireframeMode();
@@ -413,55 +416,55 @@ void ofApp::keyPressed(int key) {
 		break;
 	case OF_KEY_CONTROL:
 		bCtrlKeyDown = true;
-        currentAction = "Enable Ctrl Key";
+        currentAction = "ctrl key pressed";
 		break;
 		// Code by Brandon Archbold
 	case OF_KEY_SHIFT: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, -1, thrustForce->getDirection().z));
-        currentAction = "Sapcecraft Moving Downward";
+        currentAction = "move down";
 		break;
 	case ' ': thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, 1, thrustForce->getDirection().z));
 		exhastParticles.start();
 		if(!thrustSound.isPlaying())
 			thrustSound.play();
-        currentAction = "Sapcecraft Moving Upward";
+        currentAction = "move up";
 		break;
 	case OF_KEY_UP: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, thrustForce->getDirection().y, -1));
-        currentAction = "Spacecraft Moving Forward";
+        currentAction = "move forward";
 		break;
 	case OF_KEY_DOWN: thrustForce->setDirection(ofVec3f(thrustForce->getDirection().x, thrustForce->getDirection().y, 1));
-        currentAction = "Spacecraft Moving Backward";
+        currentAction = "move backward";
 		break;
 	case OF_KEY_LEFT: thrustForce->setDirection(ofVec3f(-1, thrustForce->getDirection().y, thrustForce->getDirection().z));
-        currentAction = "Sapcecraft Moving Left";
+        currentAction = "move left";
 		break;
 	case OF_KEY_RIGHT: thrustForce->setDirection(ofVec3f(1, thrustForce->getDirection().y, thrustForce->getDirection().z));
-        currentAction = "Spacecraft Moving Right";
+        currentAction = "move right";
 		break;
 	case OF_KEY_F1: currCam = &followCam;
-        currentAction = "Switching to the Main Camera";
+        currentAction = "Main Camera";
 		break;
 	case OF_KEY_F2: currCam = &easyCam;
-        currentAction = "Switching to the Easy Camera";
+        currentAction = "Easy Camera";
 		break;
 		// Code by Brandon Archbold
         //Code by Abraham Kong
     case OF_KEY_F3: currCam = &leftSideCam;
-            currentAction = "switching to the left siide camera";
+            currentAction = "left side cam";
         break;
     case OF_KEY_F4: currCam = &rightSideCam;
-            currentAction = "switching to the right siide camera";
+            currentAction = "right side cam";
         break;
     case OF_KEY_F5: currCam = &frontCam;
-            currentAction = "switching to the front siide camera";
+            currentAction = "front siide cam";
         break;
     case OF_KEY_F6: currCam = &bottomCam;
-            currentAction = "switching to the bottom siide camera";
+            currentAction = "bottom side cam";
         break;
     case OF_KEY_F7: currCam = &surfaceCam;
-            currentAction = "switching to the surface (upward) siide camera";
+            currentAction = "surface tracking cam";
         break;
     case OF_KEY_F8: currCam = &trackingCam;
-            currentAction = "switching to the Tracking camera";
+            currentAction = "tracking cam";
         break;
         //Code by Abraham Kong
 	default:
