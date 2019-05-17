@@ -29,7 +29,7 @@ void ofApp::setup(){
 	ofSetVerticalSync(true);
 	easyCam.disableMouseInput();
 	ofEnableSmoothing();
-	ofEnableDepthTest();
+    ofEnableDepthTest();
 	sphere.setRadius(10);
 
 	altitude = -1;
@@ -97,19 +97,23 @@ void ofApp::setup(){
 
     // setup rocketBottomLight
     // Code by Abraham Kong
-//    rocketBottomLight.setup();
-//    rocketBottomLight.enable();
-//    rocketBottomLight.setSpotlight();
+    ofEnableLighting();
+    
+    //initializing Area Light
+    areaLight.setup();
+    areaLight.enable();
+    areaLight.setAreaLight(1, 1);
+    areaLight.setPosition(0, 0, 10);
+    
+    //initializing Spot Light
+    rocketBottomLight.setup();
+    rocketBottomLight.enable();
+    rocketBottomLight.setSpotlight();
 //    rocketBottomLight.setScale(.05);
-//    rocketBottomLight.setSpotlightCutOff(30);
-//    rocketBottomLight.setAttenuation(.2, .001, .001);
-//    rocketBottomLight.setAmbientColor(ofFloatColor(0.1, 0.1, 0.1));
-//    rocketBottomLight.setDiffuseColor(ofFloatColor(.3, 0, 1));
-//    rocketBottomLight.setSpecularColor(ofFloatColor(1, 1, 1));
-//    rocketBottomLight.rotate(180, ofVec3f(0, 1, 0));
-//    rocketBottomLight.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y , pSys.particles[0].position.z );
-//    rocketBottomLight.setDirectional();
-//    rocketBottomLight.setAreaLight(100, 100);
+    rocketBottomLight.setSpotlightCutOff(15);
+    rocketBottomLight.rotate(-10, ofVec3f(1, 0, 0));
+    rocketBottomLight.rotate(-90, ofVec3f(1, 1, 1));
+    rocketBottomLight.setPosition(shipPos.x, shipPos.y, shipPos.z);
     
     // initializing the wording for current action
     currentAction = "Welcome to Rocket Lander!";
@@ -192,7 +196,7 @@ void ofApp::update() {
 		if (bScored)
 			if ((ofGetSystemTimeMillis() - timeScored) > (uint64_t)10000) 
 				bScored = false;
-
+    
 		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
 		currLevel = (int)numLevels;
@@ -202,7 +206,7 @@ void ofApp::update() {
 		rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
         // Code by Brandon Archbold
         // Code by Abraham Kong
-        
+        rocketBottomLight.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
         // Code by Abraham Kong
         
 	}
@@ -304,7 +308,8 @@ void ofApp::draw(){
 	// draw particle emitter here..
 	//
 //	emitter.draw();
-//    rocketBottomLight.draw();
+    areaLight.draw();
+    rocketBottomLight.draw();
 	particleTexture.bind();
 	vbo.draw(GL_POINTS, 0, (int)exhastParticles.sys->particles.size());
 	particleTexture.unbind();
