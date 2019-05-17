@@ -49,7 +49,7 @@ void ofApp::setup(){
 		bBackgroundLoaded = true;
 
 	ship = new Particle();
-
+	
 	// initialize the ship position, lifespan, and mass
 	pSys.add(*ship);
 	pSys.particles[0].position = ofVec3f(0, 500, 1000);
@@ -203,6 +203,7 @@ void ofApp::setup(){
 	if (!thrustSound.load("sounds/347575__djt4nn3r__thrusters-loopamplified.wav"))			// sound from: https://freesound.org/people/DJT4NN3R/sounds/347575/
 		ofExit();
 	thrustSound.setLoop(true);
+	numLevels = 20;
 	octree.create(terrain.getMesh("pPlane1"), (int) numLevels);
 	// Code by Brandon Archbold
 }
