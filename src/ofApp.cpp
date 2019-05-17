@@ -21,6 +21,7 @@ void ofApp::setup(){
 	isPaused = false;
 	bTargetShip = true;
 	hideControls = false;
+	bScored = false;
 //	ofSetWindowShape(1024, 768);
 	easyCam.setDistance(10);
 	easyCam.setNearClip(.1);
@@ -187,6 +188,10 @@ void ofApp::update() {
 		surfaceCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
 		trackingCam.setPosition(glm::vec3(500, 500, 500));
 		trackingCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
+		// timer to stop multiple scoring 10 second between scores
+		if (bScored)
+			if ((ofGetSystemTimeMillis() - timeScored) > (uint64_t)10000) 
+				bScored = false;
 
 		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
@@ -583,15 +588,27 @@ void ofApp::collisionDetection() {
 
 // Code by Brandon Archbold
 void ofApp::calcScore(float dist, ofVec3f vel) {
-	if (vel.length() > 30) return;
-	if (dist < 50)
+	if (bScored || vel.length() > 30) return;
+	if (dist < 50) {
 		score += 100;
-	else if (dist <= 60)
+		bScored = true;
+		timeScored = ofGetSystemTimeMillis();
+	}
+	else if (dist <= 60) {
 		score += 50;
-	else if (dist <= 70)
+		bScored = true;
+		timeScored = ofGetSystemTimeMillis();
+	}
+	else if (dist <= 70) {
 		score += 25;
-	else if (dist <= 80)
+		bScored = true;
+		timeScored = ofGetSystemTimeMillis();
+	}
+	else if (dist <= 80){
 		score += 5;
+		bScored = true;
+		timeScored = ofGetSystemTimeMillis();
+	}
 }
 
 // Code by Brandon Archbold

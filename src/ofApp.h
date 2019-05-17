@@ -93,6 +93,8 @@ class ofApp : public ofBaseApp{
 		bool isPaused;
 		bool bCollision;
 		bool bBackgroundLoaded;
+		bool bScored;
+		uint64_t timeScored;
 
 		bool bRoverLoaded;
 		bool bTerrainSelected;
