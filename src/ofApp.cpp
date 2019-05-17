@@ -116,7 +116,8 @@ void ofApp::setup(){
     rocketBottomLight.setup();
     rocketBottomLight.enable();
     rocketBottomLight.setSpotlight();
-    rocketBottomLight.setSpotlightCutOff(15);
+    rocketBottomLight.setSpotConcentration(10);
+    rocketBottomLight.setSpotlightCutOff(55);
     rocketBottomLight.setPosition(shipPos.x, shipPos.y - 30, shipPos.z);
 	rocketBottomLight.lookAt(glm::vec3(shipPos.x, shipPos.y - 40, shipPos.z));
     
