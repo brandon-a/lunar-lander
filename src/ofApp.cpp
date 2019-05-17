@@ -104,27 +104,58 @@ void ofApp::setup(){
     areaLight.enable();
     areaLight.setAreaLight(1, 1);
     areaLight.setPosition(0, 500, 0);
+    
     directionalLight.setup();
     directionalLight.enable();
     directionalLight.setSpotlight();
-    directionalLight.setPosition(0, 1000, 0);
+    directionalLight.setAmbientColor(ofFloatColor(0.5, 0.1, 1));
+    directionalLight.setPosition(0, 2000, 0);
 	directionalLight.lookAt(glm::vec3(0, 900, 0));
     
     //initializing Spot Light
     rocketBottomLight.setup();
     rocketBottomLight.enable();
     rocketBottomLight.setSpotlight();
-//    rocketBottomLight.setScale(.05);
     rocketBottomLight.setSpotlightCutOff(15);
-    /*rocketBottomLight.rotate(-10, ofVec3f(1, 0, 0));
-    rocketBottomLight.rotate(-90, ofVec3f(1, 1, 1));*/
     rocketBottomLight.setPosition(shipPos.x, shipPos.y - 30, shipPos.z);
 	rocketBottomLight.lookAt(glm::vec3(shipPos.x, shipPos.y - 40, shipPos.z));
     
     // initializing the wording for current action
     currentAction = "Welcome to Rocket Lander!";
     // Code by Abraham Kong
-    controlsString = "Objective: Land as close as you can to any\nof the white spheres watch your speed!\nControls:\narrow keys - movement\nspace - up\nshift - down\nc - lock/unlock easyCam\nf - fullscreen\ns - toggleEZcam target\nt - EZcam to ship\nmouse1 - select point\np - pause\nF1 - main cam\nF2 - easyCam\nF3 - leftCam\nF4 - rightCam\nF5 - frontCam\nF6 - bottomCam\nF7 - surfaceCam\nF8 - trackingCam\nh - hide this panel";
+    
+    
+    // Code from Lightening Example and Code by Abraham Kong
+    fillLight.setup();
+    fillLight.enable();
+    fillLight.setPointLight();
+    fillLight.setScale(.05);
+    fillLight.setSpotlightCutOff(15);
+    fillLight.setAttenuation(2, .001, .001);
+    fillLight.setAmbientColor(ofFloatColor(0.5, 0.1, 1));
+    fillLight.setDiffuseColor(ofFloatColor(.3, 0, 1));
+    fillLight.setSpecularColor(ofFloatColor(0, 0, 1));
+    fillLight.rotate(-10, ofVec3f(1, 0, 0));
+    fillLight.rotate(-90, ofVec3f(0, 1, 0));
+    fillLight.setPosition(0, 1200, 500);
+    fillLight.lookAt(glm::vec3(0, 900, 0));
+    
+    rimLight.setup();
+    rimLight.enable();
+    rimLight.setSpotlight();
+    rimLight.setScale(.05);
+    rimLight.setSpotlightCutOff(30);
+    rimLight.setAttenuation(.2, .001, .001);
+    rimLight.setAmbientColor(ofFloatColor(0.2, 0.1, 1));
+    rimLight.setDiffuseColor(ofFloatColor(.3, 0, 1));
+    rimLight.setSpecularColor(ofFloatColor(1, 1, 1));
+    rimLight.rotate(180, ofVec3f(0, 1, 0));
+    rimLight.setPosition(0, 1200, -700);
+    rimLight.lookAt(glm::vec3(0, 900, 0));
+    // Code from Lightening Example
+    
+    
+    controlsString = "\nObjective: Land as close as you can to any\nof the white spheres watch your speed!\n\nControls:\narrow keys - movement\nspace - up\nshift - down\nc - lock/unlock easyCam\nf - fullscreen\ns - toggleEZcam target\nt - EZcam to ship\nmouse1 - select point\np - pause\nF1 - main cam\nF2 - easyCam\nF3 - leftCam\nF4 - rightCam\nF5 - frontCam\nF6 - bottomCam\nF7 - surfaceCam\nF8 - trackingCam\nh - hide this panel";
     // setup rudimentary lighting
 	//
 	initLightingAndMaterials();
@@ -316,6 +347,8 @@ void ofApp::draw(){
 //	emitter.draw();
     areaLight.draw();
     directionalLight.draw();
+    fillLight.draw();
+    rimLight.draw();
     rocketBottomLight.draw();
 	particleTexture.bind();
 	vbo.draw(GL_POINTS, 0, (int)exhastParticles.sys->particles.size());
