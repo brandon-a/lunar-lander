@@ -103,7 +103,14 @@ void ofApp::setup(){
     areaLight.setup();
     areaLight.enable();
     areaLight.setAreaLight(1, 1);
-    areaLight.setPosition(0, 0, 10);
+    areaLight.setPosition(500, 0, 1000);
+    
+    directionalLight.setup();
+    directionalLight.enable();
+    directionalLight.setSpotlight();
+    directionalLight.rotate(-10, ofVec3f(1, 0, 0));
+    directionalLight.rotate(-90, ofVec3f(1, 1, 1));
+    directionalLight.setPosition(0, 0, 1000);
     
     //initializing Spot Light
     rocketBottomLight.setup();
@@ -309,6 +316,7 @@ void ofApp::draw(){
 	//
 //	emitter.draw();
     areaLight.draw();
+    directionalLight.draw();
     rocketBottomLight.draw();
 	particleTexture.bind();
 	vbo.draw(GL_POINTS, 0, (int)exhastParticles.sys->particles.size());
