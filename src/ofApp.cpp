@@ -21,6 +21,7 @@ void ofApp::setup(){
 	isPaused = false;
 	bTargetShip = true;
 	hideControls = false;
+	bScored = false;
 //	ofSetWindowShape(1024, 768);
 	easyCam.setDistance(10);
 	easyCam.setNearClip(.1);
@@ -33,6 +34,12 @@ void ofApp::setup(){
 
 	altitude = -1;
 	// Code by Brandon Archbold
+	score = 0;
+	scoreString = "Score: ";
+
+	landingPad1 = glm::vec3(226.868, -70.7067, 145.931);
+	landingPad2 = glm::vec3(-233, 241.588, -1165.64);
+	landingPad3 = glm::vec3(1306.03, 247.593, 232.955);
 
 	if (!backgroundImage.load("images/sky-star-dark-constellation-color-space-blue-galaxy-nebula-outer-space-background-astronomy-stars-universe-photoshop-fantasy-pretty-astronomical-object-610854.jpg")) { // image from: https://pxhere.com/en/photo/610854
 		bBackgroundLoaded = false;
@@ -185,9 +192,11 @@ void ofApp::update() {
 		surfaceCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
 		trackingCam.setPosition(glm::vec3(500, 500, 500));
 		trackingCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
-        
-        rocketBottomLight.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
-
+		// timer to stop multiple scoring 10 second between scores
+		if (bScored)
+			if ((ofGetSystemTimeMillis() - timeScored) > (uint64_t)10000) 
+				bScored = false;
+    
 		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
 		currLevel = (int)numLevels;
@@ -197,7 +206,7 @@ void ofApp::update() {
 		rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
         // Code by Brandon Archbold
         // Code by Abraham Kong
-        
+        rocketBottomLight.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
         // Code by Abraham Kong
         
 	}
@@ -225,6 +234,10 @@ void ofApp::draw(){
 	bottomCam.draw();
 	surfaceCam.draw();
 	trackingCam.draw();*/
+	ofDrawSphere(landingPad1, 5);
+	ofDrawSphere(landingPad2, 5);
+	ofDrawSphere(landingPad3, 5);
+
 	ofPushMatrix();
 	if (bWireframe) {                    // wireframe mode  (include axis)
 		ofDisableLighting();
@@ -319,6 +332,8 @@ void ofApp::draw(){
 	string str;
 	str += "FPS: " + std::to_string(ofGetFrameRate());
 	ofSetColor(ofColor::white);
+	string str4 = scoreString + std::to_string(score);
+	ofDrawBitmapString(str4, ofGetWindowWidth() - 170, 30);
 	ofDrawBitmapString(str, ofGetWindowWidth() - 170, 15);
 	string str2 = "Altitude: " + std::to_string(altitude);
 	ofDrawBitmapString(str2, 0, 15);
@@ -564,15 +579,48 @@ void ofApp::collisionDetection() {
 	TreeNode node;
 	if (octree.intersect(contactPt, octree.root, node)) {
 		bCollision = true;
-		cout << "collision " << contactPt << endl;
 
 		// impulse force
 		ofVec3f norm = ofVec3f(0, 1, 0);
 		ofVec3f f = (1 + 1.0) * ((-vel.dot(norm)) * norm);
 		impulseForce.apply(ofGetFrameRate() * f);
+		// score calculation
+		calcScore(distanceBetween(contactPt, landingPad1), vel);
+		calcScore(distanceBetween(contactPt, landingPad2), vel);
+		calcScore(distanceBetween(contactPt, landingPad3), vel);
 	}
 }
 
+// Code by Brandon Archbold
+void ofApp::calcScore(float dist, ofVec3f vel) {
+	if (bScored || vel.length() > 30) return;
+	if (dist < 50) {
+		score += 100;
+		bScored = true;
+		timeScored = ofGetSystemTimeMillis();
+	}
+	else if (dist <= 60) {
+		score += 50;
+		bScored = true;
+		timeScored = ofGetSystemTimeMillis();
+	}
+	else if (dist <= 70) {
+		score += 25;
+		bScored = true;
+		timeScored = ofGetSystemTimeMillis();
+	}
+	else if (dist <= 80){
+		score += 5;
+		bScored = true;
+		timeScored = ofGetSystemTimeMillis();
+	}
+}
+
+// Code by Brandon Archbold
+float ofApp::distanceBetween(glm::vec3 p1, glm::vec3 p2){
+	glm::vec3 difference = p2 - p1;
+	return sqrt(difference.x * difference.x + difference.y * difference.y + difference.z * difference.z);
+}
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {

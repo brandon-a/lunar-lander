@@ -45,6 +45,8 @@ class ofApp : public ofBaseApp{
 		void loadVbo();
 		void altitudeDetection();
 		void collisionDetection();
+		float ofApp::distanceBetween(glm::vec3 p1, glm::vec3 p2);
+		void calcScore(float dist, ofVec3f vel);
 
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
@@ -92,6 +94,8 @@ class ofApp : public ofBaseApp{
 		bool isPaused;
 		bool bCollision;
 		bool bBackgroundLoaded;
+		bool bScored;
+		uint64_t timeScored;
 
 		bool bRoverLoaded;
 		bool bTerrainSelected;
@@ -101,6 +105,12 @@ class ofApp : public ofBaseApp{
 		ofVec3f selectedPoint;
 		ofVec3f intersectPoint;
 		ofVec3f contactPt;
+		glm::vec3 landingPad1;
+		glm::vec3 landingPad2;
+		glm::vec3 landingPad3;
+
+		int score;
+		string scoreString;
 
 		float altitude;
 		const float selectionRange = 4.0;
