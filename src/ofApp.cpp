@@ -32,6 +32,12 @@ void ofApp::setup(){
 
 	altitude = -1;
 	// Code by Brandon Archbold
+	score = 0;
+	scoreString = "Score: ";
+
+	landingPad1 = glm::vec3(226.868, -70.7067, 145.931);
+	landingPad2 = glm::vec3(-233, 241.588, -1165.64);
+	landingPad3 = glm::vec3(1306.03, 247.593, 232.955);
 
 	if (!backgroundImage.load("images/sky-star-dark-constellation-color-space-blue-galaxy-nebula-outer-space-background-astronomy-stars-universe-photoshop-fantasy-pretty-astronomical-object-610854.jpg")) { // image from: https://pxhere.com/en/photo/610854
 		bBackgroundLoaded = false;
@@ -218,6 +224,10 @@ void ofApp::draw(){
 	bottomCam.draw();
 	surfaceCam.draw();
 	trackingCam.draw();*/
+	ofDrawSphere(landingPad1, 5);
+	ofDrawSphere(landingPad2, 5);
+	ofDrawSphere(landingPad3, 5);
+
 	ofPushMatrix();
 	if (bWireframe) {                    // wireframe mode  (include axis)
 		ofDisableLighting();

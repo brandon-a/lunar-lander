@@ -99,6 +99,12 @@ class ofApp : public ofBaseApp{
 		ofVec3f selectedPoint;
 		ofVec3f intersectPoint;
 		ofVec3f contactPt;
+		glm::vec3 landingPad1;
+		glm::vec3 landingPad2;
+		glm::vec3 landingPad3;
+
+		int score;
+		string scoreString;
 
 		float altitude;
 		const float selectionRange = 4.0;
