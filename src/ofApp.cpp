@@ -107,9 +107,8 @@ void ofApp::setup(){
     directionalLight.setup();
     directionalLight.enable();
     directionalLight.setSpotlight();
-    directionalLight.rotate(-10, ofVec3f(1, 0, 0));
-    directionalLight.rotate(-90, ofVec3f(1, 1, 1));
-    directionalLight.setPosition(0, 0, 1000);
+    directionalLight.setPosition(0, 1000, 0);
+	directionalLight.lookAt(glm::vec3(0, 900, 0));
     
     //initializing Spot Light
     rocketBottomLight.setup();
@@ -125,7 +124,7 @@ void ofApp::setup(){
     // initializing the wording for current action
     currentAction = "Welcome to Rocket Lander!";
     // Code by Abraham Kong
-    controlsString = "\n\nControls:\narrow keys - movement\nspace - up\nshift - down\nc - lock/unlock easyCam\nf - fullscreen\ns - toggleEZcam target\nt - EZcam to ship\nmouse1 - select point\np - pause\nF1 - main cam\nF2 - easyCam\nF3 - leftCam\nF4 - rightCam\nF5 - frontCam\nF6 - bottomCam\nF7 - surfaceCam\nF8 - trackingCam\nh - hide this panel";
+    controlsString = "Objective: Land as close as you can to any\nof the white spheres watch your speed!\nControls:\narrow keys - movement\nspace - up\nshift - down\nc - lock/unlock easyCam\nf - fullscreen\ns - toggleEZcam target\nt - EZcam to ship\nmouse1 - select point\np - pause\nF1 - main cam\nF2 - easyCam\nF3 - leftCam\nF4 - rightCam\nF5 - frontCam\nF6 - bottomCam\nF7 - surfaceCam\nF8 - trackingCam\nh - hide this panel";
     // setup rudimentary lighting
 	//
 	initLightingAndMaterials();
