@@ -60,6 +60,7 @@ class ofApp : public ofBaseApp{
 		ofxAssimpModelLoader terrain, rocket;
 		ofLight light;
         ofLight areaLight;
+        ofLight directionalLight;
         ofLight rocketBottomLight;
 		Box boundingBox;
 		vector<Box> level1, level2, level3, level4;
