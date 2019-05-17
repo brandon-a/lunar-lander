@@ -103,7 +103,7 @@ void ofApp::setup(){
     areaLight.setup();
     areaLight.enable();
     areaLight.setAreaLight(1, 1);
-    areaLight.setPosition(0, 0, 10);
+    areaLight.setPosition(0, 500, 0);
     
     //initializing Spot Light
     rocketBottomLight.setup();
@@ -111,9 +111,10 @@ void ofApp::setup(){
     rocketBottomLight.setSpotlight();
 //    rocketBottomLight.setScale(.05);
     rocketBottomLight.setSpotlightCutOff(15);
-    rocketBottomLight.rotate(-10, ofVec3f(1, 0, 0));
-    rocketBottomLight.rotate(-90, ofVec3f(1, 1, 1));
-    rocketBottomLight.setPosition(shipPos.x, shipPos.y, shipPos.z);
+    /*rocketBottomLight.rotate(-10, ofVec3f(1, 0, 0));
+    rocketBottomLight.rotate(-90, ofVec3f(1, 1, 1));*/
+    rocketBottomLight.setPosition(shipPos.x, shipPos.y - 30, shipPos.z);
+	rocketBottomLight.lookAt(glm::vec3(shipPos.x, shipPos.y - 40, shipPos.z));
     
     // initializing the wording for current action
     currentAction = "Welcome to Rocket Lander!";
