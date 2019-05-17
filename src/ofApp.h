@@ -45,6 +45,8 @@ class ofApp : public ofBaseApp{
 		void loadVbo();
 		void altitudeDetection();
 		void collisionDetection();
+		float ofApp::distanceBetween(glm::vec3 p1, glm::vec3 p2);
+		void calcScore(float dist, ofVec3f vel);
 
 		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 

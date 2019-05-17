@@ -321,6 +321,8 @@ void ofApp::draw(){
 	string str;
 	str += "FPS: " + std::to_string(ofGetFrameRate());
 	ofSetColor(ofColor::white);
+	string str4 = scoreString + std::to_string(score);
+	ofDrawBitmapString(str4, ofGetWindowWidth() - 170, 30);
 	ofDrawBitmapString(str, ofGetWindowWidth() - 170, 15);
 	string str2 = "Altitude: " + std::to_string(altitude);
 	ofDrawBitmapString(str2, 0, 15);
@@ -564,15 +566,36 @@ void ofApp::collisionDetection() {
 	TreeNode node;
 	if (octree.intersect(contactPt, octree.root, node)) {
 		bCollision = true;
-		cout << "collision " << contactPt << endl;
 
 		// impulse force
 		ofVec3f norm = ofVec3f(0, 1, 0);
 		ofVec3f f = (1 + 1.0) * ((-vel.dot(norm)) * norm);
 		impulseForce.apply(ofGetFrameRate() * f);
+		// score calculation
+		calcScore(distanceBetween(contactPt, landingPad1), vel);
+		calcScore(distanceBetween(contactPt, landingPad2), vel);
+		calcScore(distanceBetween(contactPt, landingPad3), vel);
 	}
 }
 
+// Code by Brandon Archbold
+void ofApp::calcScore(float dist, ofVec3f vel) {
+	if (vel.length() > 30) return;
+	if (dist < 50)
+		score += 100;
+	else if (dist <= 60)
+		score += 50;
+	else if (dist <= 70)
+		score += 25;
+	else if (dist <= 80)
+		score += 5;
+}
+
+// Code by Brandon Archbold
+float ofApp::distanceBetween(glm::vec3 p1, glm::vec3 p2){
+	glm::vec3 difference = p2 - p1;
+	return sqrt(difference.x * difference.x + difference.y * difference.y + difference.z * difference.z);
+}
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
