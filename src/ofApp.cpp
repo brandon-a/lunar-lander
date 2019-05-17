@@ -10,7 +10,7 @@
 // setup scene, lighting, state and load geometry
 //
 void ofApp::setup(){
-
+	// boolean variable setup
 	bWireframe = false;
 	bDisplayPoints = false;
 	bAltKeyDown = false;
@@ -22,7 +22,6 @@ void ofApp::setup(){
 	bTargetShip = true;
 	hideControls = false;
 	bScored = false;
-//	ofSetWindowShape(1024, 768);
 	easyCam.setDistance(10);
 	easyCam.setNearClip(.1);
 	easyCam.setFov(65.5);   // approx equivalent to 28mm in 35mm format
@@ -32,11 +31,12 @@ void ofApp::setup(){
     ofEnableDepthTest();
 	sphere.setRadius(10);
 
-	altitude = -1;
 	// Code by Brandon Archbold
+	altitude = -1;
+	// setup the score display code
 	score = 0;
 	scoreString = "Score: ";
-
+	// landing pad locations, land closer to the landing pads to score higher!
 	landingPad1 = glm::vec3(226.868, -70.7067, 145.931);
 	landingPad2 = glm::vec3(-233, 241.588, -1165.64);
 	landingPad3 = glm::vec3(1306.03, 247.593, 232.955);
@@ -50,18 +50,20 @@ void ofApp::setup(){
 
 	ship = new Particle();
 
-	// set up forces for ship
+	// initialize the ship position, lifespan, and mass
 	pSys.add(*ship);
 	pSys.particles[0].position = ofVec3f(0, 500, 1000);
 	pSys.particles[0].velocity = ofVec3f(0, 0, 0);
 	pSys.particles[0].lifespan = -1;
 	pSys.particles[0].mass = 1;
 
+	// setup forces to act on the ship
     ofVec3f temp = ofVec3f(0, 0, 0);
 	turbForce = new TurbulenceForce(ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
 	gravityForce = new GravityForce(ofVec3f(0, -10, 0));
 	thrustForce = new ThrustForce(temp, 200.0);
 
+	//add the forces to the ship
 	pSys.addForce(turbForce);
 	pSys.addForce(gravityForce);
 	pSys.addForce(thrustForce);
@@ -91,9 +93,6 @@ void ofApp::setup(){
     trackingCam.setPosition(glm::vec3(500, 500, 500));
     trackingCam.setFov(90);
     trackingCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
-
-	gui.setup();
-	gui.add(numLevels.setup("levels", 10, 1, 30));
 
     // setup rocketBottomLight
     // Code by Abraham Kong
@@ -154,13 +153,14 @@ void ofApp::setup(){
     rimLight.setPosition(0, 1200, -2000);
     rimLight.lookAt(glm::vec3(0, 900, 0));
     // Code from Lightening Example
-    
+    // control menu
     controlsString = "\nObjective: Land as close as you can to any\nof the white spheres watch your speed!\n\nControls:\narrow keys - movement\nspace - up\nshift - down\nc - lock/unlock easyCam\nf - fullscreen\ns - toggleEZcam target\nt - EZcam to ship\nmouse1 - select point\np - pause\nF1 - main cam\nF2 - easyCam\nF3 - leftCam\nF4 - rightCam\nF5 - frontCam\nF6 - bottomCam\nF7 - surfaceCam\nF8 - trackingCam\nh - hide this panel";
-
+	// Code by Brandon Archbold
+	// load in the meshes
 	terrain.loadModel("geo/models/terrain.obj");
 	terrain.setScaleNormalization(false);
 	terrain.setRotation(1, 180, 0, 0, 1);
-
+	// models for rocket and terrain created by Brandon Archbold
 	if (rocket.loadModel("geo/models/rocket.obj"))
 		bRoverLoaded = true;
 	else {
@@ -170,7 +170,7 @@ void ofApp::setup(){
 	rocket.setScaleNormalization(false);
 	rocket.setRotation(1, 180, 0, 0, 1);
 	ofDisableArbTex();
-	
+	// code by Brandon Archbold
 	// load particle image
 	if (!ofLoadImage(particleTexture, "images/dot.png")) {
 		cout << "Particle Texture File: images/dot.png not found" << endl;
@@ -185,9 +185,10 @@ void ofApp::setup(){
 	shader.load("shaders/shader");
 #endif
 	// Code by Brandon Archbold
+	// add forces to the particle emitter for exhast
 	exhastParticles.sys->addForce(new TurbulenceForce(ofVec3f(-200, -200, -200), ofVec3f(200, 200, 200)));
 	exhastParticles.sys->addForce(new GravityForce(ofVec3f(0, -50, 0)));
-	
+	// setup the particle emitter
 	exhastParticles.setVelocity(ofVec3f(0, 0, 0));
 	exhastParticles.setEmitterType(DirectionalEmitter);
 	exhastParticles.setGroupSize(50);
@@ -196,7 +197,7 @@ void ofApp::setup(){
 	exhastParticles.setVelocity(ofVec3f(0, -50, 0));
 	exhastParticles.setRate(50);
     
-
+	// load thruster sound
 	if (!thrustSound.load("sounds/347575__djt4nn3r__thrusters-loopamplified.wav"))			// sound from: https://freesound.org/people/DJT4NN3R/sounds/347575/
 		ofExit();
 	thrustSound.setLoop(true);
@@ -262,14 +263,8 @@ void ofApp::draw(){
 	ofSetColor(ofColor::white);
 	loadVbo();
 	currCam->begin();
-	// draw cams for positioning
-	/*followCam.draw();
-	leftSideCam.draw();
-	rightSideCam.draw();
-	frontCam.draw();
-	bottomCam.draw();
-	surfaceCam.draw();
-	trackingCam.draw();*/
+	// code by Brandon Archbold
+	// draw spheres to indicate landing zones
 	ofDrawSphere(landingPad1, 5);
 	ofDrawSphere(landingPad2, 5);
 	ofDrawSphere(landingPad3, 5);
@@ -280,10 +275,6 @@ void ofApp::draw(){
 		ofSetColor(ofColor::slateGray);
 		terrain.drawWireframe();
 		ofSetColor(ofColor::white);
-        /*if(leaf)
-            octree.drawLeafNodes(octree.root);
-        else
-            octree.draw(currLevel, 0);*/
 		if (bRoverLoaded) {
 			rocket.drawWireframe();
 			if (!bTerrainSelected) drawAxis(rocket.getPosition());
@@ -293,10 +284,6 @@ void ofApp::draw(){
 	else {
 		ofEnableLighting();              // shaded mode
 		terrain.drawFaces();
-		/*if (leaf)
-			octree.drawLeafNodes(octree.root);
-		else
-			octree.draw(currLevel, 0);*/
 		if (bRoverLoaded) {
 			rocket.drawFaces();
 			if (!bTerrainSelected) drawAxis(rocket.getPosition());
@@ -343,7 +330,6 @@ void ofApp::draw(){
 
 	// draw particle emitter here..
 	//
-//	emitter.draw();
     areaLight.draw();
     directionalLight.draw();
     fillLight.draw();
@@ -574,6 +560,8 @@ void ofApp::mouseMoved(int x, int y ){
 
 // Code by Brandon Archbold
 //--------------------------------------------------------------
+// This method finds a point on the terrain using a ray generated by the mouse from screen to world space for selection
+// when a point is selected and bPointSelected is true, a blue sphere is drawn on the terrain to indicate selection
 void ofApp::mousePressed(int x, int y, int button) {
     ofVec3f mouse(mouseX, mouseY);
 	ofVec3f rayPoint = currCam->screenToWorld(mouse);
@@ -591,6 +579,8 @@ void ofApp::mousePressed(int x, int y, int button) {
 		bPointSelected = false;
 }
 // Code by Brandon Archbold
+// This code using ray tracing pointing down from the bottom of the ship
+// to determine the altitude of the ship above any given terrain
 void ofApp::altitudeDetection() {
 	ofVec3f shipPos = pSys.particles[0].position;
     ofVec3f rayPoint = ofVec3f(shipPos.x, shipPos.y -1, shipPos.z);
@@ -602,14 +592,16 @@ void ofApp::altitudeDetection() {
         if (nodeRtn.points.size() != 0) {
 			Vector3 pos = nodeRtn.box.min();
 			float y = pos.y();
-			altitude = shipPos.y - 30 - y;
+			altitude = shipPos.y - 30 - y;	// the coordinates of the bottom of the ship minus the coordinates of the terrain equals the altitude of the ship
         }
     }
 }
 // Code by Brandon Archbold
+// Thise method performs collision detection with the surface utilizing a point based selction method in the octree
+// it also calculates the score when a collision is detected
+// calc score will not apply any more points until a timer has expired so that you can only have
+// one score generated per landing.
 void ofApp::collisionDetection() {
-	//ofPoint center = rocket.getMesh("pCylinder2").getCentroid();
-	//contactPt = ofVec3f(center.x, center.y - (rocket.getSceneMax().y - rocket.getSceneMin().y) / 2, center.z + rocket.getPosition().y);
 	contactPt = pSys.particles[0].position - 30;
 	ofVec3f vel = pSys.particles[0].velocity;
 	if (vel.y > 0)
@@ -631,6 +623,9 @@ void ofApp::collisionDetection() {
 }
 
 // Code by Brandon Archbold
+// this method awards points to the user based on how close they get to the landing sphere
+// if they are moving too fast no points are awarded
+// points are only applied once every time interval as determined in update
 void ofApp::calcScore(float dist, ofVec3f vel) {
 	if (bScored || vel.length() > 30) return;
 	if (dist < 50) {
@@ -656,6 +651,7 @@ void ofApp::calcScore(float dist, ofVec3f vel) {
 }
 
 // Code by Brandon Archbold
+// this is a simple method to determine the distance between two points in space
 float ofApp::distanceBetween(glm::vec3 p1, glm::vec3 p2){
 	glm::vec3 difference = p2 - p1;
 	return sqrt(difference.x * difference.x + difference.y * difference.y + difference.z * difference.z);
@@ -673,13 +669,14 @@ void ofApp::mouseReleased(int x, int y, int button) {
 }
 
 // Set the camera to use the selected point as it's new target
-//  
+//  this method sets the camera target to either the point that was selected previously, or to the position of the ship
 void ofApp::setCameraTarget() {
-    //Code by Abraham Kong
+    // code by Brandon Archbold
 	if (!bTargetShip && bPointSelected)
 		easyCam.setPosition(glm::vec3(selectedPoint.x, selectedPoint.y, selectedPoint.z));
 	else if (bTargetShip) {
         easyCam.setPosition(glm::vec3(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z));
+		// code by Abraham Kong
     } else {
         easyCam.reset();
         easyCam.setDistance(180);

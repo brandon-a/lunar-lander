@@ -38,17 +38,11 @@ class ofApp : public ofBaseApp{
 		void togglePointsDisplay();
 		void toggleSelectTerrain();
 		void setCameraTarget();
-		bool  doPointSelection();
-		void drawBox(const Box &box);
-		Box meshBounds(const ofMesh &);
-		void subDivideBox8(const Box &b, vector<Box> & boxList);
 		void loadVbo();
 		void altitudeDetection();
 		void collisionDetection();
 		float distanceBetween(glm::vec3 p1, glm::vec3 p2);
 		void calcScore(float dist, ofVec3f vel);
-
-		bool mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point);
 
 		ofEasyCam easyCam;
 		ofCamera followCam;
