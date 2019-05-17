@@ -95,6 +95,7 @@ class ofApp : public ofBaseApp{
 		bool bRoverLoaded;
 		bool bTerrainSelected;
 		bool bTargetShip;
+		bool hideControls;
 			
 		ofVec3f selectedPoint;
 		ofVec3f intersectPoint;
@@ -104,4 +105,5 @@ class ofApp : public ofBaseApp{
 		const float selectionRange = 4.0;
     
         string currentAction; //the current action
+		string controlsString;
 };
