@@ -52,7 +52,7 @@ void ofApp::setup(){
 
 	// set up forces for ship
 	pSys.add(*ship);
-	pSys.particles[0].position = ofVec3f(0, 500, 0);
+	pSys.particles[0].position = ofVec3f(0, 500, 1000);
 	pSys.particles[0].velocity = ofVec3f(0, 0, 0);
 	pSys.particles[0].lifespan = -1;
 	pSys.particles[0].mass = 1;
@@ -107,10 +107,11 @@ void ofApp::setup(){
     
     directionalLight.setup();
     directionalLight.enable();
-    directionalLight.setSpotlight();
+    //directionalLight.setSpotlight();
+	directionalLight.setPointLight();
     directionalLight.setAmbientColor(ofFloatColor(0.5, 0.1, 1));
-    directionalLight.setPosition(0, 2000, 0);
-	directionalLight.lookAt(glm::vec3(0, 900, 0));
+    directionalLight.setPosition(0, 2000, 2000);
+	directionalLight.lookAt(glm::vec3(0, 1000, 1000));
     
     //initializing Spot Light
     rocketBottomLight.setup();
@@ -149,16 +150,12 @@ void ofApp::setup(){
     rimLight.setAmbientColor(ofFloatColor(0.2, 0.1, 1));
     rimLight.setDiffuseColor(ofFloatColor(.3, 0, 1));
     rimLight.setSpecularColor(ofFloatColor(1, 1, 1));
-    rimLight.rotate(180, ofVec3f(0, 1, 0));
-    rimLight.setPosition(0, 1200, -700);
+    //rimLight.rotate(180, ofVec3f(0, 1, 0));
+    rimLight.setPosition(0, 1200, -2000);
     rimLight.lookAt(glm::vec3(0, 900, 0));
     // Code from Lightening Example
     
-    
     controlsString = "\nObjective: Land as close as you can to any\nof the white spheres watch your speed!\n\nControls:\narrow keys - movement\nspace - up\nshift - down\nc - lock/unlock easyCam\nf - fullscreen\ns - toggleEZcam target\nt - EZcam to ship\nmouse1 - select point\np - pause\nF1 - main cam\nF2 - easyCam\nF3 - leftCam\nF4 - rightCam\nF5 - frontCam\nF6 - bottomCam\nF7 - surfaceCam\nF8 - trackingCam\nh - hide this panel";
-    // setup rudimentary lighting
-	//
-	initLightingAndMaterials();
 
 	terrain.loadModel("geo/models/terrain.obj");
 	terrain.setScaleNormalization(false);
@@ -214,14 +211,14 @@ void ofApp::update() {
 	if (!isPaused) {
 		// update cameras
 		// Code by Brandon Archbold, Abraham Kong
-
+		// update the cameras
 		glm::vec3 shipPos = pSys.particles[0].position;
 		followCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z + 90));
 		leftSideCam.setPosition(glm::vec3(shipPos.x - 20, shipPos.y, shipPos.z));
 		leftSideCam.lookAt(glm::vec3(shipPos.x - 30, shipPos.y, shipPos.z));
 		rightSideCam.setPosition(glm::vec3(shipPos.x + 20, shipPos.y, shipPos.z));
 		rightSideCam.lookAt(glm::vec3(shipPos.x + 30, shipPos.y, shipPos.z));
-		frontCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z + 90));
+		frontCam.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z - 90));
 		frontCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
 		bottomCam.setPosition(glm::vec3(shipPos.x, shipPos.y - 30, shipPos.z));
 		bottomCam.lookAt(glm::vec3(shipPos.x, shipPos.y - 40, shipPos.z));
@@ -229,18 +226,20 @@ void ofApp::update() {
 		surfaceCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
 		trackingCam.setPosition(glm::vec3(500, 500, 500));
 		trackingCam.lookAt(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
+
+		// Code by Brandon Archbold
 		// timer to stop multiple scoring 10 second between scores
 		if (bScored)
 			if ((ofGetSystemTimeMillis() - timeScored) > (uint64_t)10000) 
 				bScored = false;
-    
+		// set the position of the exhast emitter
 		exhastParticles.setPosition(ofVec3f(pSys.particles[0].position.x, pSys.particles[0].position.y - 30, pSys.particles[0].position.z));
 		exhastParticles.update();
 		currLevel = (int)numLevels;
 		pSys.update();
 		altitudeDetection();
 		collisionDetection();
-		rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);
+		rocket.setPosition(pSys.particles[0].position.x, pSys.particles[0].position.y, pSys.particles[0].position.z);	// have the rocket model follow the physics particle
         // Code by Brandon Archbold
         // Code by Abraham Kong
         rocketBottomLight.setPosition(glm::vec3(shipPos.x, shipPos.y, shipPos.z));
@@ -759,14 +758,6 @@ void ofApp::savePicture() {
 void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 }
-
-//bool ofApp::mouseIntersectPlane(ofVec3f planePoint, ofVec3f planeNorm, ofVec3f &point) {
-//	glm::vec3 mouse(mouseX, mouseY, 0);
-//	ofVec3f rayPoint = cam.screenToWorld(mouse);
-//	ofVec3f rayDir = rayPoint - cam.getPosition();
-//	rayDir.normalize();
-//	return (rayIntersectPlane(rayPoint, rayDir, planePoint, planeNorm, point));
-//}
 
 // load vertex buffer in preparation for rendering
 //
